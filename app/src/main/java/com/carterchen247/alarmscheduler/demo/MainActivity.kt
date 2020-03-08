@@ -12,10 +12,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // schedule an alarm
-        val config = AlarmConfig(DemoAlarmTask.TYPE, System.currentTimeMillis() + 2000L).apply {
-            //            alarmId = 1
+        val config = AlarmConfig(DemoAlarmTask.TYPE, System.currentTimeMillis() + 5000L).apply {
+            alarmId = 1
             customData = Bundle()
         }
         AlarmScheduler.schedule(config)
+
+//        Handler().postDelayed(Runnable {
+//            AlarmScheduler.cancel(1)
+//        }, 2000L)
+//        Handler().postDelayed(Runnable {
+//            AlarmScheduler.cancel(1)
+//        }, 3000L)
     }
 }
