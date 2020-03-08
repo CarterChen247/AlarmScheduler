@@ -22,7 +22,7 @@ object AlarmScheduler {
 
     fun schedule(config: AlarmConfig) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
-        val alarmInfo = config.getAlarmInfo()
+        val alarmInfo = createAlarmInfo(config)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             config.alarmId,
@@ -49,4 +49,10 @@ object AlarmScheduler {
     internal fun getFactory(): AlarmTaskFactory {
         return alarmTaskFactory
     }
+
+    private fun createAlarmInfo(config: AlarmConfig): AlarmInfo {
+        return config.getAlarmInfo()
+    }
+
 }
+
