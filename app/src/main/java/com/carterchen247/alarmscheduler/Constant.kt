@@ -2,5 +2,5 @@ package com.carterchen247.alarmscheduler
 
 object Constant {
     const val ALARM_INFO = "ALARM_INFO"
-    const val DATA = "DATA"
+    const val CUSTOM_DATA = "CUSTOM_DATA"
 }

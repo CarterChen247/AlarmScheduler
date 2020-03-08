@@ -11,7 +11,7 @@ import androidx.core.os.bundleOf
 object AlarmScheduler {
 
     private lateinit var context: Context
-    private lateinit var alarmTaskFactory: AlarmTaskFactory
+    lateinit var alarmTaskFactory: AlarmTaskFactory
 
     fun init(
         context: Context,
@@ -27,7 +27,7 @@ object AlarmScheduler {
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             alarmInfo.alarmId,
-            buildIntent(alarmInfo, config.getData()),
+            buildIntent(alarmInfo, config.customData),
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
@@ -43,7 +43,7 @@ object AlarmScheduler {
         return Intent(context, AlarmTriggerReceiver::class.java).apply {
             bundleOf(
                 Constant.ALARM_INFO to alarmInfo,
-                Constant.DATA to data
+                Constant.CUSTOM_DATA to data
             )
         }
     }

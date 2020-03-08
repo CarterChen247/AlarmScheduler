@@ -10,7 +10,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // schedule an alarm
-        val setting = AlarmConfig(DemoAlarmTask.TYPE, 1000L, 1)
+        val setting = AlarmConfig(DemoAlarmTask.TYPE, 1000L).apply {
+            alarmId = 1
+            customData = null
+        }
         AlarmScheduler.schedule(setting)
     }
 }

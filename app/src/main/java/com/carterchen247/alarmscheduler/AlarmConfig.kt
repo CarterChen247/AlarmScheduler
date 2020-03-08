@@ -4,17 +4,14 @@ import android.os.Bundle
 
 class AlarmConfig(
     private val alarmType: Int,
-    private val triggerAtMillis: Long,
-    private val alarmId: Int,
-    private val data: Bundle? = null
+    private val triggerAtMillis: Long
 ) {
+    var alarmId: Int = 0
+    var customData: Bundle? = null
+
     fun getAlarmInfo() = AlarmInfo(
         alarmType,
         triggerAtMillis,
         alarmId
     )
-
-    fun getData(): Bundle? {
-        return data
-    }
 }
