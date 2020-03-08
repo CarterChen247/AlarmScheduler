@@ -10,8 +10,8 @@ class App : Application() {
         Timber.plant(Timber.DebugTree())
 
         // init AlarmScheduler
-        AlarmScheduler.init(object : AlarmTaskFactory {
-            override fun createAlarmTask(identifier: String): AlarmTask {
+        AlarmScheduler.init(this, object : AlarmTaskFactory {
+            override fun createAlarmTask(alarmType: Int): AlarmTask {
                 return DemoAlarmTask()
             }
         })

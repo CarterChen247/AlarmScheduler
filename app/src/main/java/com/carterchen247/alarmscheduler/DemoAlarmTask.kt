@@ -5,7 +5,7 @@ import timber.log.Timber
 class DemoAlarmTask : AlarmTask {
 
     companion object {
-        const val TAG = "DemoAlarmTask"
+        const val TYPE = 1
     }
 
     override fun onAlarmFires() {
