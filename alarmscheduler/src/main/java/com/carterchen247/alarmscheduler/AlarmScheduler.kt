@@ -6,11 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.AlarmManagerCompat
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 object AlarmScheduler {
 
     private lateinit var context: Context
     private lateinit var alarmTaskFactory: AlarmTaskFactory
+    private lateinit var alarmTaskDao: AlarmTaskDao
 
     fun init(
         context: Context,
@@ -18,15 +22,37 @@ object AlarmScheduler {
     ) {
         this.context = context
         this.alarmTaskFactory = alarmTaskFactory
+        this.alarmTaskDao = AlarmTaskDatabase.getInstance(context).getAlarmTaskDao()
     }
 
     fun schedule(config: AlarmConfig) {
+        Timber.d("schedule")
+        val d = getAlarmId(config)
+            .subscribeOn(Schedulers.io())
+            .map { it.toInt() }
+            .subscribe({ alarmId ->
+                val alarmInfo = config.getAlarmInfo().copy(alarmId = alarmId)
+                scheduleInternal(alarmInfo, config.customData)
+            }, {
+                Timber.e("something wrong")
+            })
+    }
+
+    private fun getAlarmId(alarmConfig: AlarmConfig): Single<Long> {
+        return if (alarmConfig.hasUserAssignedId()) {
+            alarmTaskDao.insertEntity(AlarmTaskEntity(alarmConfig.alarmId))
+        } else {
+            alarmTaskDao.insertEntity(AlarmTaskEntity())
+        }
+    }
+
+    private fun scheduleInternal(alarmInfo: AlarmInfo, customData: Bundle?) {
+        Timber.d("scheduleInternal alarmInfo=$alarmInfo")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
-        val alarmInfo = createAlarmInfo(config)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            config.alarmId,
-            buildIntent(alarmInfo, config.customData),
+            alarmInfo.alarmId,
+            buildIntent(alarmInfo, customData),
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
@@ -49,10 +75,5 @@ object AlarmScheduler {
     internal fun getFactory(): AlarmTaskFactory {
         return alarmTaskFactory
     }
-
-    private fun createAlarmInfo(config: AlarmConfig): AlarmInfo {
-        return config.getAlarmInfo()
-    }
-
 }
 

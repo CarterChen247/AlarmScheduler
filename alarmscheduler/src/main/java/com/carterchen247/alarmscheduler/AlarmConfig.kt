@@ -14,4 +14,8 @@ class AlarmConfig(
         triggerAtMillis,
         alarmId
     )
+
+    fun hasUserAssignedId(): Boolean {
+        return alarmId != Constant.AUTO_ASSIGN
+    }
 }
