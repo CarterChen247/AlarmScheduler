@@ -1,2 +1,3 @@
 rootProject.name='AlarmScheduler'
 include ':app'
+include ':alarmscheduler'

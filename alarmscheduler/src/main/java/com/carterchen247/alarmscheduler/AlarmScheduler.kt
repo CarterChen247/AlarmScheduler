@@ -17,8 +17,8 @@ object AlarmScheduler {
         context: Context,
         alarmTaskFactory: AlarmTaskFactory
     ) {
-        this.context = context
-        this.alarmTaskFactory = alarmTaskFactory
+        AlarmScheduler.context = context
+        AlarmScheduler.alarmTaskFactory = alarmTaskFactory
     }
 
     fun schedule(config: AlarmConfig) {
