@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 29
@@ -43,4 +44,13 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation "io.reactivex.rxjava2:rxjava:2.2.16"
+}
+
+publish {
+    userOrg = 'kazafchen'
+    repoName = 'Library'
+    groupId = 'com.carterchen247'
+    artifactId = 'alarm-scheduler'
+    publishVersion = '0.0.0.1'
+    desc = 'Alarm scheduler'
 }
