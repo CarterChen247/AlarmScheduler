@@ -79,7 +79,20 @@ object AlarmScheduler {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
             it.cancel()
+            alarmTaskDao.removeEntity(AlarmTaskEntity(alarmId))
+                .subscribeOn(Schedulers.io())
+                .subscribe()
         }
+    }
+
+    fun cancelAllAlarmTasks() {
+        val d = alarmTaskDao.selectAll()
+            .subscribeOn(Schedulers.io())
+            .subscribe { tasks ->
+                tasks.forEach {
+                    cancelAlarmTask(it.id)
+                }
+            }
     }
 
     fun isAlarmTaskRunning(alarmId: Int): Boolean {

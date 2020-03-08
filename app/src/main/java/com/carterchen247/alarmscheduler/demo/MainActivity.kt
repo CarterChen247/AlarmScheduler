@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
 
         // schedule an alarm
         val config = AlarmConfig(DemoAlarmTask.TYPE, System.currentTimeMillis() + 5000L).apply {
-            alarmId = 1
+            //            alarmId = 1
             customData = Bundle()
         }
         AlarmScheduler.schedule(config)
