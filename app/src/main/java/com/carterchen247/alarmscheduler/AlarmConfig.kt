@@ -6,7 +6,7 @@ class AlarmConfig(
     private val alarmType: Int,
     private val triggerAtMillis: Long
 ) {
-    var alarmId: Int = 0
+    var alarmId: Int = Constant.AUTO_ASSIGN
     var customData: Bundle? = null
 
     fun getAlarmInfo() = AlarmInfo(
