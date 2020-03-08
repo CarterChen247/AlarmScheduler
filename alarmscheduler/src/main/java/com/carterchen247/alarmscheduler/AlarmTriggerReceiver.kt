@@ -6,12 +6,13 @@ import android.content.Intent
 
 class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val alarmInfo = intent.getParcelableExtra<AlarmInfo>(Constant.ALARM_INFO)
+        val alarmType = intent.getIntExtra(Constant.ALARM_TYPE, Constant.VALUE_NOT_ASSIGN)
+        val alarmId = intent.getIntExtra(Constant.ALARM_ID, Constant.VALUE_NOT_ASSIGN)
         val customData = intent.getBundleExtra(Constant.CUSTOM_DATA)
-        if (alarmInfo == null) {
-            error("alarmInfo should not be null here")
+        if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
+            error("something wrong")
         }
-        val alarmTask = AlarmScheduler.alarmTaskFactory.createAlarmTask(alarmInfo.alarmType)
-        alarmTask.onAlarmFires(alarmInfo, customData)
+        val alarmTask = AlarmScheduler.getFactory().createAlarmTask(alarmType)
+        alarmTask.onAlarmFires(alarmId, customData)
     }
 }

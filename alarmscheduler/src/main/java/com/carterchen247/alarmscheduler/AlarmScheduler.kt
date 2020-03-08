@@ -6,19 +6,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.AlarmManagerCompat
-import androidx.core.os.bundleOf
 
 object AlarmScheduler {
 
     private lateinit var context: Context
-    lateinit var alarmTaskFactory: AlarmTaskFactory
+    private lateinit var alarmTaskFactory: AlarmTaskFactory
 
     fun init(
         context: Context,
         alarmTaskFactory: AlarmTaskFactory
     ) {
-        AlarmScheduler.context = context
-        AlarmScheduler.alarmTaskFactory = alarmTaskFactory
+        this.context = context
+        this.alarmTaskFactory = alarmTaskFactory
     }
 
     fun schedule(config: AlarmConfig) {
@@ -26,7 +25,7 @@ object AlarmScheduler {
         val alarmInfo = config.getAlarmInfo()
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            alarmInfo.alarmId,
+            config.alarmId,
             buildIntent(alarmInfo, config.customData),
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
@@ -41,10 +40,13 @@ object AlarmScheduler {
 
     private fun buildIntent(alarmInfo: AlarmInfo, data: Bundle?): Intent {
         return Intent(context, AlarmTriggerReceiver::class.java).apply {
-            bundleOf(
-                Constant.ALARM_INFO to alarmInfo,
-                Constant.CUSTOM_DATA to data
-            )
+            putExtra(Constant.ALARM_TYPE, alarmInfo.alarmType)
+            putExtra(Constant.ALARM_ID, alarmInfo.alarmId)
+            putExtra(Constant.CUSTOM_DATA, data)
         }
+    }
+
+    internal fun getFactory(): AlarmTaskFactory {
+        return alarmTaskFactory
     }
 }
