@@ -72,20 +72,28 @@ object AlarmScheduler {
         }
     }
 
-    fun cancel(alarmId: Int) {
-        val intent = Intent(context, AlarmTriggerReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            alarmId,
-            intent,
-            PendingIntent.FLAG_NO_CREATE
-        )
+    fun cancelAlarmTask(alarmId: Int) {
+        val pendingIntent = getPendingIntentById(alarmId)
         Timber.d("alarm of id $alarmId exist=${pendingIntent != null}")
         pendingIntent?.let {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
             it.cancel()
         }
+    }
+
+    fun isAlarmTaskRunning(alarmId: Int): Boolean {
+        return getPendingIntentById(alarmId) != null
+    }
+
+    private fun getPendingIntentById(alarmId: Int): PendingIntent? {
+        val intent = Intent(context, AlarmTriggerReceiver::class.java)
+        return PendingIntent.getBroadcast(
+            context,
+            alarmId,
+            intent,
+            PendingIntent.FLAG_NO_CREATE
+        )
     }
 
     internal fun getFactory(): AlarmTaskFactory {
