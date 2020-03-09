@@ -14,5 +14,6 @@ class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         val alarmTask = AlarmScheduler.getFactory().createAlarmTask(alarmType)
         alarmTask.onAlarmFires(alarmId, customData)
+        AlarmTaskDatabase.getInstance(context).getAlarmTaskDao().removeEntity(AlarmTaskEntity(alarmId))
     }
 }
