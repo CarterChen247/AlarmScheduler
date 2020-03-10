@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 
 class DataPayloadTypeConverter {
 
-    private val adapter = BundleJsonFormatAdapter()
+    private val adapter: BundleJsonFormatAdapter = SimpleBundleJsonFormatAdapter()
 
     @TypeConverter
     fun stringToDataPayload(string: String): DataPayload {

@@ -6,9 +6,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class BundleJsonFormatAdapterTest {
+class SimpleBundleJsonFormatAdapterTest {
 
-    private lateinit var adapter: BundleJsonFormatAdapter
+    private lateinit var adapter: SimpleBundleJsonFormatAdapter
     private val data = listOf(
         "key_putInt" to 1,
         "key_putLong" to 2L,
@@ -19,7 +19,7 @@ class BundleJsonFormatAdapterTest {
 
     @Before
     fun setUp() {
-        adapter = BundleJsonFormatAdapter()
+        adapter = SimpleBundleJsonFormatAdapter()
     }
 
     @Test
