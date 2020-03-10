@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.json.JSONObject
 
 class BundleJsonFormatAdapter {
+
     fun toJson(bundle: Bundle): String {
         val jsonObject = JSONObject()
         if (bundle.isEmpty) {

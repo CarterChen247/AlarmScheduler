@@ -1,7 +1,7 @@
 package com.carterchen247.alarmscheduler.demo
 
-import android.os.Bundle
 import com.carterchen247.alarmscheduler.AlarmTask
+import com.carterchen247.alarmscheduler.DataPayload
 import timber.log.Timber
 
 class DemoAlarmTask : AlarmTask {
@@ -10,7 +10,7 @@ class DemoAlarmTask : AlarmTask {
         const val TYPE = 1
     }
 
-    override fun onAlarmFires(alarmId: Int, customData: Bundle?) {
-        Timber.d("alarm fires")
+    override fun onAlarmFires(alarmId: Int, dataPayload: DataPayload) {
+        Timber.d("alarm fires alarmId=$alarmId dataPayload.keySet=${dataPayload.keySet().toList()}")
     }
 }

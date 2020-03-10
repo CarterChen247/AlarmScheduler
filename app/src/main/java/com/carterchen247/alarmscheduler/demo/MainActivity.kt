@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.carterchen247.alarmscheduler.AlarmConfig
 import com.carterchen247.alarmscheduler.AlarmScheduler
+import com.carterchen247.alarmscheduler.DataPayload
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
             // schedule an alarm
             val config = AlarmConfig(DemoAlarmTask.TYPE, System.currentTimeMillis() + 5000L).apply {
                 //            alarmId = 1
-                customData = Bundle()
+                dataPayload = DataPayload().apply { putString("reminder", "have a meeting") }
             }
             AlarmScheduler.schedule(config)
         }

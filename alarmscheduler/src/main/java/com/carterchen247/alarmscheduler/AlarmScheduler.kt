@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import androidx.core.app.AlarmManagerCompat
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -32,7 +31,7 @@ object AlarmScheduler {
             .map { it.toInt() }
             .subscribe({ alarmId ->
                 val alarmInfo = config.getAlarmInfo().copy(alarmId = alarmId)
-                scheduleInternal(alarmInfo, config.customData)
+                scheduleInternal(alarmInfo, config.dataPayload)
             }, {
                 Timber.e("something wrong")
             })
@@ -40,19 +39,26 @@ object AlarmScheduler {
 
     private fun getAlarmId(alarmConfig: AlarmConfig): Single<Long> {
         return if (alarmConfig.hasUserAssignedId()) {
-            alarmTaskDao.insertEntity(AlarmTaskEntity(alarmConfig.alarmId))
+            alarmTaskDao.insertEntity(
+                AlarmTaskEntity(
+                    alarmConfig.alarmId,
+                    alarmConfig.dataPayload
+                )
+            )
         } else {
-            alarmTaskDao.insertEntity(AlarmTaskEntity())
+            alarmTaskDao.insertEntity(
+                AlarmTaskEntity(dataPayload = alarmConfig.dataPayload)
+            )
         }
     }
 
-    private fun scheduleInternal(alarmInfo: AlarmInfo, customData: Bundle?) {
+    private fun scheduleInternal(alarmInfo: AlarmInfo, dataPayload: DataPayload?) {
         Timber.d("scheduleInternal alarmInfo=$alarmInfo")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             alarmInfo.alarmId,
-            buildIntent(alarmInfo, customData),
+            buildIntent(alarmInfo, dataPayload),
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
@@ -64,11 +70,11 @@ object AlarmScheduler {
         )
     }
 
-    private fun buildIntent(alarmInfo: AlarmInfo, data: Bundle?): Intent {
+    private fun buildIntent(alarmInfo: AlarmInfo, dataPayload: DataPayload?): Intent {
         return Intent(context, AlarmTriggerReceiver::class.java).apply {
             putExtra(Constant.ALARM_TYPE, alarmInfo.alarmType)
             putExtra(Constant.ALARM_ID, alarmInfo.alarmId)
-            putExtra(Constant.CUSTOM_DATA, data)
+            putExtra(Constant.ALARM_CUSTOM_DATA, dataPayload?.getBundle())
         }
     }
 
