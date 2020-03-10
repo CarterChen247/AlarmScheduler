@@ -19,7 +19,7 @@ class DataPayload {
     }
 
     fun getLong(key: String): Long {
-        return bundle.getLong(key)
+        return bundle.getLong(key) // TODO test value
     }
 
     fun putString(key: String, value: String) {
