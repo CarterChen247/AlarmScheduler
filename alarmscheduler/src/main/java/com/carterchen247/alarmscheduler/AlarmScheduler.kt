@@ -41,8 +41,10 @@ object AlarmScheduler {
         return if (alarmConfig.hasUserAssignedId()) {
             alarmTaskDao.insertEntity(
                 AlarmTaskEntity(
-                    alarmConfig.alarmId,
-                    alarmConfig.dataPayload
+                    alarmConfig.alarmType,
+                    alarmConfig.triggerAtMillis,
+                    alarmConfig.dataPayload,
+                    alarmConfig.alarmId
                 )
             )
         } else {

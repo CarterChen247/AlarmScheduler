@@ -1,8 +1,8 @@
 package com.carterchen247.alarmscheduler
 
 class AlarmConfig(
-    private val alarmType: Int,
-    private val triggerAtMillis: Long
+    val alarmType: Int,
+    val triggerAtMillis: Long
 ) {
     var alarmId: Int = Constant.AUTO_ASSIGN
     var dataPayload: DataPayload? = null

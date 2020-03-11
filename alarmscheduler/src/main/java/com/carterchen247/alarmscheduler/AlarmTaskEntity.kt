@@ -7,6 +7,8 @@ import androidx.room.TypeConverters
 @Entity
 @TypeConverters(DataPayloadTypeConverter::class)
 data class AlarmTaskEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val dataPayload: DataPayload? = null
+    val type: Int = -1,
+    val triggerTime: Long = -1,
+    val dataPayload: DataPayload? = null,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0
 )
