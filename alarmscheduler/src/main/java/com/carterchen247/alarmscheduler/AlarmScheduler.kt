@@ -30,8 +30,7 @@ object AlarmScheduler {
             .subscribeOn(Schedulers.io())
             .map { it.toInt() }
             .subscribe({ alarmId ->
-                val alarmInfo = config.getAlarmInfo().copy(alarmId = alarmId)
-                scheduleInternal(alarmInfo, config.dataPayload)
+                scheduleInternal(config.copy(alarmId = alarmId))
             }, {
                 Timber.e("something wrong")
             })
@@ -42,7 +41,7 @@ object AlarmScheduler {
             alarmTaskDao.insertEntity(
                 AlarmTaskEntity(
                     alarmConfig.alarmType,
-                    alarmConfig.triggerAtMillis,
+                    alarmConfig.triggerTime,
                     alarmConfig.dataPayload,
                     alarmConfig.alarmId
                 )
@@ -54,29 +53,29 @@ object AlarmScheduler {
         }
     }
 
-    private fun scheduleInternal(alarmInfo: AlarmInfo, dataPayload: DataPayload?) {
-        Timber.d("scheduleInternal alarmInfo=$alarmInfo")
+    private fun scheduleInternal(alarmConfig: AlarmConfig) {
+        Timber.d("scheduleInternal alarmConfig=$alarmConfig")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            alarmInfo.alarmId,
-            buildIntent(alarmInfo, dataPayload),
+            alarmConfig.alarmId,
+            buildIntent(alarmConfig),
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager as AlarmManager,
             AlarmManager.RTC_WAKEUP,
-            alarmInfo.triggerAtMillis,
+            alarmConfig.triggerTime,
             pendingIntent
         )
     }
 
-    private fun buildIntent(alarmInfo: AlarmInfo, dataPayload: DataPayload?): Intent {
+    private fun buildIntent(alarmConfig: AlarmConfig): Intent {
         return Intent(context, AlarmTriggerReceiver::class.java).apply {
-            putExtra(Constant.ALARM_TYPE, alarmInfo.alarmType)
-            putExtra(Constant.ALARM_ID, alarmInfo.alarmId)
-            putExtra(Constant.ALARM_CUSTOM_DATA, dataPayload?.getBundle())
+            putExtra(Constant.ALARM_TYPE, alarmConfig.alarmType)
+            putExtra(Constant.ALARM_ID, alarmConfig.alarmId)
+            putExtra(Constant.ALARM_CUSTOM_DATA, alarmConfig.dataPayload?.getBundle())
         }
     }
 

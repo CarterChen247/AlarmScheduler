@@ -14,10 +14,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         btnSchedule.setOnClickListener {
             // schedule an alarm
-            val config = AlarmConfig(DemoAlarmTask.TYPE, System.currentTimeMillis() + 5000L).apply {
-                //            alarmId = 1
+            val config = AlarmConfig(
+                alarmType = DemoAlarmTask.TYPE,
+                triggerTime = System.currentTimeMillis() + 5000L,
                 dataPayload = DataPayload().apply { putString("reminder", "have a meeting") }
-            }
+            )
             AlarmScheduler.schedule(config)
         }
     }

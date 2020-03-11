@@ -21,11 +21,10 @@ class DeviceBootCompleteReceiver : BroadcastReceiver() {
                     AlarmScheduler.schedule(
                         AlarmConfig(
                             it.type,
-                            it.triggerTime
-                        ).apply {
-                            alarmId = it.id
-                            dataPayload = it.dataPayload
-                        }
+                            it.triggerTime,
+                            it.id,
+                            it.dataPayload
+                        )
                     )
                 }
             }, {
