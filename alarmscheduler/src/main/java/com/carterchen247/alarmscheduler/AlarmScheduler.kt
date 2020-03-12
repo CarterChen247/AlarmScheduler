@@ -24,13 +24,16 @@ object AlarmScheduler {
         this.alarmTaskDao = AlarmTaskDatabase.getInstance(context).getAlarmTaskDao()
     }
 
-    fun schedule(info: AlarmInfo) {
-        Timber.d("schedule")
-        val d = getAlarmId(info)
+    fun schedule(config: AlarmConfig) {
+        schedule(config.getInfo())
+    }
+
+    internal fun schedule(alarmInfo: AlarmInfo) {
+        val d = getAlarmId(alarmInfo)
             .subscribeOn(Schedulers.io())
             .map { it.toInt() }
             .subscribe({ alarmId ->
-                scheduleInternal(info.copy(alarmId = alarmId))
+                scheduleInternal(alarmInfo.copy(alarmId = alarmId))
             }, {
                 Timber.e("something wrong")
             })
