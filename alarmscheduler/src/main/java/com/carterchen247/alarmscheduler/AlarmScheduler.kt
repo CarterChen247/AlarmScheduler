@@ -24,58 +24,58 @@ object AlarmScheduler {
         this.alarmTaskDao = AlarmTaskDatabase.getInstance(context).getAlarmTaskDao()
     }
 
-    fun schedule(config: AlarmConfig) {
+    fun schedule(info: AlarmInfo) {
         Timber.d("schedule")
-        val d = getAlarmId(config)
+        val d = getAlarmId(info)
             .subscribeOn(Schedulers.io())
             .map { it.toInt() }
             .subscribe({ alarmId ->
-                scheduleInternal(config.copy(alarmId = alarmId))
+                scheduleInternal(info.copy(alarmId = alarmId))
             }, {
                 Timber.e("something wrong")
             })
     }
 
-    private fun getAlarmId(alarmConfig: AlarmConfig): Single<Long> {
-        return if (alarmConfig.hasUserAssignedId()) {
+    private fun getAlarmId(alarmInfo: AlarmInfo): Single<Long> {
+        return if (alarmInfo.hasUserAssignedId()) {
             alarmTaskDao.insertEntity(
                 AlarmTaskEntity(
-                    alarmConfig.alarmType,
-                    alarmConfig.triggerTime,
-                    alarmConfig.dataPayload,
-                    alarmConfig.alarmId
+                    alarmInfo.alarmType,
+                    alarmInfo.triggerTime,
+                    alarmInfo.dataPayload,
+                    alarmInfo.alarmId
                 )
             )
         } else {
             alarmTaskDao.insertEntity(
-                AlarmTaskEntity(dataPayload = alarmConfig.dataPayload)
+                AlarmTaskEntity(dataPayload = alarmInfo.dataPayload)
             )
         }
     }
 
-    private fun scheduleInternal(alarmConfig: AlarmConfig) {
-        Timber.d("scheduleInternal alarmConfig=$alarmConfig")
+    private fun scheduleInternal(alarmInfo: AlarmInfo) {
+        Timber.d("scheduleInternal alarmConfig=$alarmInfo")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            alarmConfig.alarmId,
-            buildIntent(alarmConfig),
+            alarmInfo.alarmId,
+            buildIntent(alarmInfo),
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager as AlarmManager,
             AlarmManager.RTC_WAKEUP,
-            alarmConfig.triggerTime,
+            alarmInfo.triggerTime,
             pendingIntent
         )
     }
 
-    private fun buildIntent(alarmConfig: AlarmConfig): Intent {
+    private fun buildIntent(alarmInfo: AlarmInfo): Intent {
         return Intent(context, AlarmTriggerReceiver::class.java).apply {
-            putExtra(Constant.ALARM_TYPE, alarmConfig.alarmType)
-            putExtra(Constant.ALARM_ID, alarmConfig.alarmId)
-            putExtra(Constant.ALARM_CUSTOM_DATA, alarmConfig.dataPayload?.getBundle())
+            putExtra(Constant.ALARM_TYPE, alarmInfo.alarmType)
+            putExtra(Constant.ALARM_ID, alarmInfo.alarmId)
+            putExtra(Constant.ALARM_CUSTOM_DATA, alarmInfo.dataPayload?.getBundle())
         }
     }
 

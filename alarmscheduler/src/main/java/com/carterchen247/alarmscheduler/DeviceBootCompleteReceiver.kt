@@ -19,7 +19,7 @@ class DeviceBootCompleteReceiver : BroadcastReceiver() {
             .subscribe({ alarmTasks ->
                 alarmTasks.forEach {
                     AlarmScheduler.schedule(
-                        AlarmConfig(
+                        AlarmInfo(
                             it.type,
                             it.triggerTime,
                             it.id,

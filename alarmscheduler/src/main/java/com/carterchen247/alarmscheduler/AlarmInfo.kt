@@ -1,6 +1,6 @@
 package com.carterchen247.alarmscheduler
 
-data class AlarmConfig(
+data class AlarmInfo(
     val alarmType: Int,
     val triggerTime: Long,
     var alarmId: Int = Constant.AUTO_ASSIGN,
