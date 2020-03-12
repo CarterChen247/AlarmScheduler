@@ -3,10 +3,10 @@ package com.carterchen247.alarmscheduler
 data class AlarmInfo(
     val alarmType: Int,
     val triggerTime: Long,
-    var alarmId: Int = Constant.AUTO_GENERATE,
+    var alarmId: Int = AlarmID.AUTO_GENERATE,
     var dataPayload: DataPayload? = null
 ) {
     fun hasUserAssignedId(): Boolean {
-        return alarmId != Constant.AUTO_GENERATE
+        return alarmId != AlarmID.AUTO_GENERATE
     }
 }

@@ -5,7 +5,7 @@ class AlarmConfig(
     private val triggerTime: Long,
     block: (AlarmConfig.() -> Unit)? = null
 ) {
-    private var alarmId: Int = Constant.AUTO_GENERATE
+    private var alarmId: Int = AlarmID.AUTO_GENERATE
     private var dataPayload: DataPayload? = null
 
     init {
