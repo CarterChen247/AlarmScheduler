@@ -11,4 +11,17 @@ data class AlarmTaskEntity(
     val triggerTime: Long = -1,
     val dataPayload: DataPayload? = null,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
-)
+) {
+    companion object {
+        fun create(alarmInfo: AlarmInfo): AlarmTaskEntity {
+            return alarmInfo.run {
+                AlarmTaskEntity(
+                    alarmType,
+                    triggerTime,
+                    dataPayload,
+                    if (autoGenerateId()) 0 else alarmId
+                )
+            }
+        }
+    }
+}

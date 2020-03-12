@@ -6,7 +6,7 @@ data class AlarmInfo(
     var alarmId: Int = AlarmID.AUTO_GENERATE,
     var dataPayload: DataPayload? = null
 ) {
-    fun hasUserAssignedId(): Boolean {
-        return alarmId != AlarmID.AUTO_GENERATE
+    fun autoGenerateId(): Boolean {
+        return alarmId == AlarmID.AUTO_GENERATE
     }
 }

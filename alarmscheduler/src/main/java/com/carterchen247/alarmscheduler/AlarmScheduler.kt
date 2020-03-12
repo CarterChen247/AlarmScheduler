@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
@@ -29,34 +28,18 @@ object AlarmScheduler {
     }
 
     internal fun schedule(alarmInfo: AlarmInfo) {
-        val d = getAlarmId(alarmInfo)
+        val d = alarmTaskDao.insertEntity(AlarmTaskEntity.create(alarmInfo))
             .subscribeOn(Schedulers.io())
             .map { it.toInt() }
             .subscribe({ alarmId ->
-                scheduleInternal(alarmInfo.copy(alarmId = alarmId))
+                val correctIdInfo = alarmInfo.copy(alarmId = alarmId)
+                scheduleAlarm(correctIdInfo)
             }, {
                 Timber.e("something wrong")
             })
     }
 
-    private fun getAlarmId(alarmInfo: AlarmInfo): Single<Long> {
-        return if (alarmInfo.hasUserAssignedId()) {
-            alarmTaskDao.insertEntity(
-                AlarmTaskEntity(
-                    alarmInfo.alarmType,
-                    alarmInfo.triggerTime,
-                    alarmInfo.dataPayload,
-                    alarmInfo.alarmId
-                )
-            )
-        } else {
-            alarmTaskDao.insertEntity(
-                AlarmTaskEntity(dataPayload = alarmInfo.dataPayload)
-            )
-        }
-    }
-
-    private fun scheduleInternal(alarmInfo: AlarmInfo) {
+    private fun scheduleAlarm(alarmInfo: AlarmInfo) {
         Timber.d("scheduleInternal alarmConfig=$alarmInfo")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
         val pendingIntent = PendingIntent.getBroadcast(
