@@ -3,14 +3,14 @@ package com.carterchen247.alarmscheduler
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import timber.log.Timber
+import android.util.Log
 
 open class AddAlarmTaskFactoryReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Timber.d("AddAlarmTaskFactoryReceiver onReceive")
+        Log.d("alarmScheduler", "AddAlarmTaskFactoryReceiver onReceive")
     }
 
     fun addAlarmTask() {
-        Timber.d("AddAlarmTaskFactoryReceiver addAlarmTask")
+        Log.d("alarmScheduler", "AddAlarmTaskFactoryReceiver addAlarmTask")
     }
 }
