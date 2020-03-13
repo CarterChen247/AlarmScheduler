@@ -50,6 +50,6 @@ publish {
     repoName = 'Library'
     groupId = 'com.carterchen247'
     artifactId = 'alarm-scheduler'
-    publishVersion = '0.0.0.3'
+    publishVersion = '0.0.0.4'
     desc = 'Alarm scheduler'
 }
