@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import timber.log.Timber
 
-class AddAlarmTaskFactoryReceiver : BroadcastReceiver() {
+open class AddAlarmTaskFactoryReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Timber.d("AddAlarmTaskFactoryReceiver onReceive")
     }
