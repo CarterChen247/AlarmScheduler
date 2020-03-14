@@ -103,6 +103,27 @@ object AlarmScheduler {
         )
     }
 
+    fun rescheduleAlarms() {
+        Logger.d("rescheduleAlarms")
+        val d = AlarmTaskDatabase.getInstance(context)
+            .getAlarmTaskDao()
+            .selectAll()
+            .subscribe({ alarmTasks ->
+                alarmTasks.forEach {
+                    schedule(
+                        AlarmInfo(
+                            it.type,
+                            it.triggerTime,
+                            it.id,
+                            it.dataPayload
+                        )
+                    )
+                }
+            }, {
+                Logger.e("rescheduleAlarms failed. error=$it")
+            })
+    }
+
     internal fun getFactory(): AlarmTaskFactory {
         return alarmTaskFactory
     }
