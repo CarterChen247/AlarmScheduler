@@ -3,8 +3,7 @@ package com.carterchen247.alarmscheduler.demo
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import timber.log.Timber
 
-class AlarmSchedulerLoggerImpl :
-    AlarmSchedulerLogger {
+class AlarmSchedulerLoggerImpl : AlarmSchedulerLogger {
     override fun log(priority: Int, msg: String) {
         Timber.log(priority, msg)
     }
