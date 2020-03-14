@@ -17,8 +17,8 @@ class TestLocaleChangedReceiver : BroadcastReceiver() {
         val resolveInfos = context.packageManager.queryBroadcastReceivers(intent, 0)
         resolveInfos.forEach { info ->
             val name = info?.activityInfo?.name ?: return
-            val receiver = Class.forName(name).newInstance() as AddAlarmTaskFactoryReceiver
-            receiver.addAlarmTask()
+            val receiver = Class.forName(name).newInstance() as RestartSchedulerReceiver
+            receiver.restartScheduler()
         }
     }
 }

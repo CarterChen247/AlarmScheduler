@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-open class AddAlarmTaskFactoryReceiver : BroadcastReceiver() {
+open class RestartSchedulerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("alarmScheduler", "AddAlarmTaskFactoryReceiver onReceive")
     }
 
-    fun addAlarmTask() {
+    fun restartScheduler() {
         Log.d("alarmScheduler", "AddAlarmTaskFactoryReceiver addAlarmTask")
     }
 }
