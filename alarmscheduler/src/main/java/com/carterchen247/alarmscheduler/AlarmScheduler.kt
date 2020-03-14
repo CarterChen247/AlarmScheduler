@@ -106,12 +106,8 @@ object AlarmScheduler {
         return alarmTaskFactory
     }
 
-    fun setDebugging(debugging: Boolean) {
-        Logger.debugging = debugging
-    }
-
     fun setLogger(logger: AlarmSchedulerLogger?) {
-        Logger.setLogger(logger)
+        Logger.logger = logger
     }
 }
 
