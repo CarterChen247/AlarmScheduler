@@ -9,7 +9,7 @@ import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.AlarmTaskDatabase
 import com.carterchen247.alarmscheduler.logger.Logger
 
-class DeviceBootCompleteReceiver : BroadcastReceiver() {
+class RebootCompleteReceiver : BroadcastReceiver() {
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {

@@ -9,7 +9,7 @@
             android:name=".receiver.AlarmTriggerReceiver"
             android:enabled="true" />
         <receiver
-            android:name=".receiver.DeviceBootCompleteReceiver"
+            android:name=".receiver.RebootCompleteReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
