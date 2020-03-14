@@ -18,5 +18,6 @@ class App : Application() {
                 return DemoAlarmTask()
             }
         })
+        AlarmScheduler.setLogger(AlarmSchedulerLoggerImpl())
     }
 }

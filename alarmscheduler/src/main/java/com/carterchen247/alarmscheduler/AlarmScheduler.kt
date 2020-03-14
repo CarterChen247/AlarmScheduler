@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
+import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
+import com.carterchen247.alarmscheduler.logger.Logger
 import io.reactivex.schedulers.Schedulers
 
 object AlarmScheduler {
@@ -102,6 +104,14 @@ object AlarmScheduler {
 
     internal fun getFactory(): AlarmTaskFactory {
         return alarmTaskFactory
+    }
+
+    fun setDebugging(debugging: Boolean) {
+        Logger.debugging = debugging
+    }
+
+    fun setLogger(logger: AlarmSchedulerLogger?) {
+        Logger.setLogger(logger)
     }
 }
 
