@@ -17,6 +17,6 @@ class RescheduleAlarmService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         Logger.d("RescheduleAlarmService onHandleWork")
-        AlarmScheduler.rescheduleAlarms()
+        AlarmScheduler.getInstance().rescheduleAlarms()
     }
 }

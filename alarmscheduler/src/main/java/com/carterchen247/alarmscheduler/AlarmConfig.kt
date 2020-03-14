@@ -20,6 +20,10 @@ class AlarmConfig(
         this.dataPayload = dataPayload
     }
 
+    fun schedule() {
+        AlarmScheduler.getInstance().schedule(getInfo())
+    }
+
     internal fun getInfo(): AlarmInfo {
         return AlarmInfo(
             type,

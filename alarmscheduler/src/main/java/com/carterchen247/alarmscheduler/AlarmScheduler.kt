@@ -10,23 +10,37 @@ import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import io.reactivex.schedulers.Schedulers
 
-object AlarmScheduler {
+class AlarmScheduler private constructor(val context: Context) {
 
-    private lateinit var context: Context
-    private lateinit var alarmTaskFactory: AlarmTaskFactory
-    private lateinit var alarmTaskDao: AlarmTaskDao
+    private val alarmTaskDao = AlarmTaskDatabase.getInstance(context).getAlarmTaskDao()
+    private var alarmTaskFactory: AlarmTaskFactory? = null
+    private var logger = Logger
 
-    fun init(
-        context: Context,
-        alarmTaskFactory: AlarmTaskFactory
-    ) {
-        this.context = context
-        this.alarmTaskFactory = alarmTaskFactory
-        this.alarmTaskDao = AlarmTaskDatabase.getInstance(context).getAlarmTaskDao()
-    }
+    companion object {
+        @Volatile
+        private var instance: AlarmScheduler? = null
 
-    fun schedule(config: AlarmConfig) {
-        schedule(config.getInfo())
+        internal fun getInstance(context: Context): AlarmScheduler {
+            return instance ?: synchronized(AlarmScheduler::class.java) {
+                instance ?: AlarmScheduler(context).also { instance = it }
+            }
+        }
+
+        internal fun getInstance(): AlarmScheduler {
+            return instance ?: error("AlarmScheduler instance is null. Please init it first")
+        }
+
+        fun init(context: Context) {
+            getInstance(context)
+        }
+
+        fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
+            getInstance().alarmTaskFactory = alarmTaskFactory
+        }
+
+        fun setLogger(logger: AlarmSchedulerLogger?) {
+            getInstance().logger.logger = logger
+        }
     }
 
     internal fun schedule(alarmInfo: AlarmInfo) {
@@ -124,12 +138,8 @@ object AlarmScheduler {
             })
     }
 
-    internal fun getFactory(): AlarmTaskFactory {
+    internal fun getAlarmTaskFactory(): AlarmTaskFactory? {
         return alarmTaskFactory
-    }
-
-    fun setLogger(logger: AlarmSchedulerLogger?) {
-        Logger.logger = logger
     }
 }
 

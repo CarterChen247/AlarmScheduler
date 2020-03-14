@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.carterchen247.alarmscheduler.*
+import com.carterchen247.alarmscheduler.logger.Logger
 
 class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -11,9 +12,15 @@ class AlarmTriggerReceiver : BroadcastReceiver() {
         val alarmId = intent.getIntExtra(Constant.ALARM_ID, Constant.VALUE_NOT_ASSIGN)
         val bundle = intent.getBundleExtra(Constant.ALARM_CUSTOM_DATA)
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
-            error("something wrong")
+            return
         }
-        val alarmTask = AlarmScheduler.getFactory().createAlarmTask(alarmType)
+        val alarmTaskFactory = AlarmScheduler.getInstance(context).getAlarmTaskFactory()
+        if (alarmTaskFactory == null) {
+            Logger.d("Failed creating AlarmTask, alarmTaskFactory is null")
+            return
+        }
+        Logger.d("Creating AlarmTask. alarmType=$alarmType alarmId=$alarmId")
+        val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
         alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
         AlarmTaskDatabase.getInstance(context).getAlarmTaskDao().removeEntity(AlarmTaskEntity(alarmId))
     }

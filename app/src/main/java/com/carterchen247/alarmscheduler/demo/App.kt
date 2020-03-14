@@ -13,11 +13,13 @@ class App : Application() {
         Timber.plant(Timber.DebugTree())
 
         // init AlarmScheduler
-        AlarmScheduler.init(this, object : AlarmTaskFactory {
+        AlarmScheduler.init(this)
+        AlarmScheduler.setAlarmTaskFactory(object : AlarmTaskFactory {
             override fun createAlarmTask(alarmType: Int): AlarmTask {
                 return DemoAlarmTask()
             }
         })
         AlarmScheduler.setLogger(AlarmSchedulerLoggerImpl())
     }
+
 }
