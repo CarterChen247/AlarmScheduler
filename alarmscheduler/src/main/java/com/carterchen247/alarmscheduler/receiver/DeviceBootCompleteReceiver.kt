@@ -10,9 +10,24 @@ import com.carterchen247.alarmscheduler.AlarmTaskDatabase
 import com.carterchen247.alarmscheduler.logger.Logger
 
 class DeviceBootCompleteReceiver : BroadcastReceiver() {
+
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
+        restartScheduler(context)
         rescheduleAlarms(context)
+    }
+
+    private fun restartScheduler(context: Context) {
+        Logger.d("restartScheduler")
+        val intent = Intent(RestartSchedulerReceiver.ACTION)
+        intent.setPackage(context.packageName)
+
+        val resolveInfos = context.packageManager.queryBroadcastReceivers(intent, 0)
+        resolveInfos.forEach { info ->
+            val name = info?.activityInfo?.name ?: return
+            val receiver = Class.forName(name).newInstance() as RestartSchedulerReceiver
+            receiver.restartScheduler()
+        }
     }
 
     private fun rescheduleAlarms(context: Context) {

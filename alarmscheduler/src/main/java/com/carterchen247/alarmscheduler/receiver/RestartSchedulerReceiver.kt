@@ -3,14 +3,16 @@ package com.carterchen247.alarmscheduler.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 
-open class RestartSchedulerReceiver : BroadcastReceiver() {
+abstract class RestartSchedulerReceiver : BroadcastReceiver() {
+
+    abstract fun restartScheduler()
+
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("alarmScheduler", "AddAlarmTaskFactoryReceiver onReceive")
+        // do nothing
     }
 
-    fun restartScheduler() {
-        Log.d("alarmScheduler", "AddAlarmTaskFactoryReceiver addAlarmTask")
+    companion object {
+        const val ACTION = "com.carterchen247.alarmscheduler.receiver.RESTART_SCHEDULER"
     }
 }
