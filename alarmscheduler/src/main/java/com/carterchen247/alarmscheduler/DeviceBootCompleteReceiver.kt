@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import timber.log.Timber
 
 class DeviceBootCompleteReceiver : BroadcastReceiver() {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
@@ -13,6 +12,7 @@ class DeviceBootCompleteReceiver : BroadcastReceiver() {
     }
 
     private fun rescheduleAlarms(context: Context) {
+        Logger.d("rescheduleAlarms")
         val d = AlarmTaskDatabase.getInstance(context)
             .getAlarmTaskDao()
             .selectAll()
@@ -28,7 +28,7 @@ class DeviceBootCompleteReceiver : BroadcastReceiver() {
                     )
                 }
             }, {
-                Timber.d("error=$it")
+                Logger.e("rescheduleAlarms failed. error=$it")
             })
     }
 }
