@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

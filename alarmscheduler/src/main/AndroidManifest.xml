@@ -6,10 +6,10 @@
 
     <application android:allowBackup="true">
         <receiver
-            android:name=".AlarmTriggerReceiver"
+            android:name=".receiver.AlarmTriggerReceiver"
             android:enabled="true" />
         <receiver
-            android:name=".DeviceBootCompleteReceiver"
+            android:name=".receiver.DeviceBootCompleteReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -18,7 +18,7 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".TestLocaleChangedReceiver">
+        <receiver android:name=".receiver.TestLocaleChangedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>

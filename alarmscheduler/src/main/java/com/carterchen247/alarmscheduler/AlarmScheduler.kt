@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
+import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import io.reactivex.schedulers.Schedulers
 
 object AlarmScheduler {
