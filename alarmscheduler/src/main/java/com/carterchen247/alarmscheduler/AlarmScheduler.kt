@@ -92,7 +92,7 @@ class AlarmScheduler private constructor(private val context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
             it.cancel()
-            alarmStateDao.removeEntity(AlarmStateEntity(alarmId))
+            alarmStateDao.removeEntity(AlarmStateEntity(id = alarmId))
                 .subscribeOn(Schedulers.io())
                 .subscribe()
         }
@@ -123,11 +123,11 @@ class AlarmScheduler private constructor(private val context: Context) {
     }
 
     fun rescheduleAlarms() {
-        Logger.d("rescheduleAlarms")
         val d = AlarmSchedulerDatabase.getInstance(context)
             .getAlarmStateDao()
             .selectAll()
             .subscribe({ alarmTasks ->
+                Logger.d("rescheduleAlarms count=${alarmTasks.size}")
                 alarmTasks.forEach {
                     schedule(
                         AlarmInfo(

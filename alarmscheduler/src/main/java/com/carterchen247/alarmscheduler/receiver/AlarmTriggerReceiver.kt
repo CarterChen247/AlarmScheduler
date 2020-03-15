@@ -27,7 +27,7 @@ class AlarmTriggerReceiver : BroadcastReceiver() {
         Logger.d("Creating AlarmTask. alarmType=$alarmType alarmId=$alarmId")
         val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
         alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
-        AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao().removeEntity(AlarmStateEntity(alarmId))
+        AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao().removeEntity(AlarmStateEntity(id = alarmId))
             .subscribeOn(Schedulers.io())
             .subscribe()
     }
