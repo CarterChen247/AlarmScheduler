@@ -1,5 +1,6 @@
 package com.carterchen247.alarmscheduler.storage.converter
 
+import android.os.Bundle
 import androidx.room.TypeConverter
 import com.carterchen247.alarmscheduler.model.DataPayload
 
@@ -13,7 +14,7 @@ class DataPayloadTypeConverter {
     }
 
     @TypeConverter
-    fun dataPayloadToString(dataPayload: DataPayload): String {
-        return adapter.toJson(dataPayload.getBundle())
+    fun dataPayloadToString(dataPayload: DataPayload?): String {
+        return adapter.toJson(dataPayload?.getBundle() ?: Bundle())
     }
 }
