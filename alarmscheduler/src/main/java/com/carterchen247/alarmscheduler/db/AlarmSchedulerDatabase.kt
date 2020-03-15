@@ -6,20 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [AlarmTaskEntity::class],
+    entities = [AlarmStateEntity::class],
     version = 1
 )
-abstract class AlarmTaskDatabase : RoomDatabase() {
+abstract class AlarmSchedulerDatabase : RoomDatabase() {
 
-    abstract fun getAlarmTaskDao(): AlarmTaskDao
+    abstract fun getAlarmStateDao(): AlarmStateDao
 
     companion object {
         private const val DB_NAME = "AlarmScheduler"
 
         @Volatile
-        private var INSTANCE: AlarmTaskDatabase? = null
+        private var INSTANCE: AlarmSchedulerDatabase? = null
 
-        fun getInstance(context: Context): AlarmTaskDatabase =
+        fun getInstance(context: Context): AlarmSchedulerDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
                     ?: buildDatabase(context).also { INSTANCE = it }
@@ -28,7 +28,7 @@ abstract class AlarmTaskDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                AlarmTaskDatabase::class.java, DB_NAME
+                AlarmSchedulerDatabase::class.java, DB_NAME
             ).build()
     }
 }

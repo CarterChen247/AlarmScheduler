@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
-import com.carterchen247.alarmscheduler.db.AlarmTaskDatabase
-import com.carterchen247.alarmscheduler.db.AlarmTaskEntity
+import com.carterchen247.alarmscheduler.db.AlarmSchedulerDatabase
+import com.carterchen247.alarmscheduler.db.AlarmStateEntity
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.AlarmInfo
@@ -17,7 +17,7 @@ import io.reactivex.schedulers.Schedulers
 
 class AlarmScheduler private constructor(val context: Context) {
 
-    private val alarmTaskDao = AlarmTaskDatabase.getInstance(context).getAlarmTaskDao()
+    private val alarmStateDao = AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao()
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
 
@@ -50,7 +50,7 @@ class AlarmScheduler private constructor(val context: Context) {
 
     internal fun schedule(alarmInfo: AlarmInfo) {
         Logger.d("schedule alarm=$alarmInfo")
-        val d = alarmTaskDao.insertEntity(AlarmTaskEntity.create(alarmInfo))
+        val d = alarmStateDao.insertEntity(AlarmStateEntity.create(alarmInfo))
             .subscribeOn(Schedulers.io())
             .map { it.toInt() }
             .subscribe({ alarmId ->
@@ -92,14 +92,14 @@ class AlarmScheduler private constructor(val context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
             it.cancel()
-            alarmTaskDao.removeEntity(AlarmTaskEntity(alarmId))
+            alarmStateDao.removeEntity(AlarmStateEntity(alarmId))
                 .subscribeOn(Schedulers.io())
                 .subscribe()
         }
     }
 
     fun cancelAllAlarmTasks() {
-        val d = alarmTaskDao.selectAll()
+        val d = alarmStateDao.selectAll()
             .subscribeOn(Schedulers.io())
             .subscribe { tasks ->
                 tasks.forEach {
@@ -124,8 +124,8 @@ class AlarmScheduler private constructor(val context: Context) {
 
     fun rescheduleAlarms() {
         Logger.d("rescheduleAlarms")
-        val d = AlarmTaskDatabase.getInstance(context)
-            .getAlarmTaskDao()
+        val d = AlarmSchedulerDatabase.getInstance(context)
+            .getAlarmStateDao()
             .selectAll()
             .subscribe({ alarmTasks ->
                 alarmTasks.forEach {

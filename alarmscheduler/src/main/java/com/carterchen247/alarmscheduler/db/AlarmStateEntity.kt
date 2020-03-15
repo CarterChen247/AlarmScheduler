@@ -9,16 +9,16 @@ import com.carterchen247.alarmscheduler.model.DataPayload
 
 @Entity
 @TypeConverters(DataPayloadTypeConverter::class)
-data class AlarmTaskEntity(
+data class AlarmStateEntity(
     val type: Int = -1,
     val triggerTime: Long = -1,
     val dataPayload: DataPayload? = null,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 ) {
     companion object {
-        fun create(alarmInfo: AlarmInfo): AlarmTaskEntity {
+        fun create(alarmInfo: AlarmInfo): AlarmStateEntity {
             return alarmInfo.run {
-                AlarmTaskEntity(
+                AlarmStateEntity(
                     alarmType,
                     triggerTime,
                     dataPayload,
