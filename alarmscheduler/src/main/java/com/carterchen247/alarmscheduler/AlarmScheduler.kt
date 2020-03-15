@@ -10,16 +10,14 @@ import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
-import com.carterchen247.alarmscheduler.storage.AlarmSchedulerDatabase
-import com.carterchen247.alarmscheduler.storage.AlarmStateEntity
+import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
-import io.reactivex.schedulers.Schedulers
 
 class AlarmScheduler private constructor(private val context: Context) {
 
-    private val alarmStateDao = AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao()
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
+    private val alarmStateRepository = AlarmStateRepository.getInstance(context)
 
     companion object {
         @Volatile
@@ -50,8 +48,7 @@ class AlarmScheduler private constructor(private val context: Context) {
 
     internal fun schedule(alarmInfo: AlarmInfo) {
         Logger.d("schedule alarm=$alarmInfo")
-        val d = alarmStateDao.insertEntity(AlarmStateEntity.create(alarmInfo))
-            .subscribeOn(Schedulers.io())
+        val d = alarmStateRepository.add(alarmInfo)
             .map { it.toInt() }
             .subscribe({ alarmId ->
                 val correctIdInfo = alarmInfo.copy(alarmId = alarmId)
@@ -92,18 +89,15 @@ class AlarmScheduler private constructor(private val context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
             it.cancel()
-            alarmStateDao.removeEntity(AlarmStateEntity(id = alarmId))
-                .subscribeOn(Schedulers.io())
-                .subscribe()
+            alarmStateRepository.removeImmediately(alarmId)
         }
     }
 
     fun cancelAllAlarmTasks() {
-        val d = alarmStateDao.selectAll()
-            .subscribeOn(Schedulers.io())
+        val d = alarmStateRepository.getAll()
             .subscribe { tasks ->
                 tasks.forEach {
-                    cancelAlarmTask(it.id)
+                    cancelAlarmTask(it.alarmId)
                 }
             }
     }
@@ -123,21 +117,10 @@ class AlarmScheduler private constructor(private val context: Context) {
     }
 
     fun rescheduleAlarms() {
-        val d = AlarmSchedulerDatabase.getInstance(context)
-            .getAlarmStateDao()
-            .selectAll()
-            .subscribe({ alarmTasks ->
-                Logger.d("rescheduleAlarms count=${alarmTasks.size}")
-                alarmTasks.forEach {
-                    schedule(
-                        AlarmInfo(
-                            it.type,
-                            it.triggerTime,
-                            it.id,
-                            it.dataPayload
-                        )
-                    )
-                }
+        val d = alarmStateRepository.getAll()
+            .subscribe({ alarmInfos ->
+                Logger.d("rescheduleAlarms count=${alarmInfos.size}")
+                alarmInfos.forEach { schedule(it) }
             }, {
                 Logger.e("rescheduleAlarms failed. error=$it")
             })
