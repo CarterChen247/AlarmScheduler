@@ -17,6 +17,17 @@ class RescheduleAlarmService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         Logger.d("RescheduleAlarmService onHandleWork")
+        delayReschedule()
         AlarmScheduler.getInstance().rescheduleAlarms()
+    }
+
+    /**
+     * Since query and insert/remove operation may perform in different thread,
+     * user may perform these operation as well when the application is launched,
+     * add a slightly delay to avoid potential race condition, trying to guarantee
+     * the data integrity.
+     */
+    private fun delayReschedule() {
+        Thread.sleep(3000L)
     }
 }

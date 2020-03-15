@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.carterchen247.alarmscheduler.*
 import com.carterchen247.alarmscheduler.logger.Logger
+import io.reactivex.schedulers.Schedulers
 
 class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -23,5 +24,7 @@ class AlarmTriggerReceiver : BroadcastReceiver() {
         val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
         alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
         AlarmTaskDatabase.getInstance(context).getAlarmTaskDao().removeEntity(AlarmTaskEntity(alarmId))
+            .subscribeOn(Schedulers.io())
+            .subscribe()
     }
 }
