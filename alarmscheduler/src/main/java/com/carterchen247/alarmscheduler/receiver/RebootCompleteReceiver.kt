@@ -3,8 +3,8 @@ package com.carterchen247.alarmscheduler.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.carterchen247.alarmscheduler.RescheduleAlarmService
 import com.carterchen247.alarmscheduler.logger.Logger
+import com.carterchen247.alarmscheduler.service.RescheduleAlarmService
 
 
 class RebootCompleteReceiver : BroadcastReceiver() {

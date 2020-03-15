@@ -2,8 +2,8 @@ package com.carterchen247.alarmscheduler.demo
 
 import android.app.Application
 import com.carterchen247.alarmscheduler.AlarmScheduler
-import com.carterchen247.alarmscheduler.AlarmTask
-import com.carterchen247.alarmscheduler.AlarmTaskFactory
+import com.carterchen247.alarmscheduler.task.AlarmTask
+import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import timber.log.Timber
 
 class App : Application() {

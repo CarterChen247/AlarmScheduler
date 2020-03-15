@@ -1,8 +1,9 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.service
 
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
+import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.logger.Logger
 
 class RescheduleAlarmService : JobIntentService() {

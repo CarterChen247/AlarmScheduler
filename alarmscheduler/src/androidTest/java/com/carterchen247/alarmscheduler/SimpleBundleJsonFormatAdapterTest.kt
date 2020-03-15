@@ -1,6 +1,7 @@
 package com.carterchen247.alarmscheduler
 
 import android.os.Bundle
+import com.carterchen247.alarmscheduler.db.converter.SimpleBundleJsonFormatAdapter
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

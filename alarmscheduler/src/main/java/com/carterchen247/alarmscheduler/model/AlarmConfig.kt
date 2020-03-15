@@ -1,4 +1,7 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.model
+
+import com.carterchen247.alarmscheduler.AlarmScheduler
+import com.carterchen247.alarmscheduler.constant.AlarmID
 
 class AlarmConfig(
     private val type: Int,

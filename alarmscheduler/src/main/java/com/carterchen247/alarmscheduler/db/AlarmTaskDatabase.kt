@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.db
 
 import android.content.Context
 import androidx.room.Database
@@ -21,7 +21,8 @@ abstract class AlarmTaskDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): AlarmTaskDatabase =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
+                INSTANCE
+                    ?: buildDatabase(context).also { INSTANCE = it }
             }
 
         private fun buildDatabase(context: Context) =

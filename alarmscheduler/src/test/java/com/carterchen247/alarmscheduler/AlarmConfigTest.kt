@@ -1,5 +1,6 @@
 package com.carterchen247.alarmscheduler
 
+import com.carterchen247.alarmscheduler.model.AlarmConfig
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

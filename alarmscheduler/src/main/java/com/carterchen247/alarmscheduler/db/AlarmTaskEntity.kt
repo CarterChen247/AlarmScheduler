@@ -1,8 +1,11 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.carterchen247.alarmscheduler.db.converter.DataPayloadTypeConverter
+import com.carterchen247.alarmscheduler.model.AlarmInfo
+import com.carterchen247.alarmscheduler.model.DataPayload
 
 @Entity
 @TypeConverters(DataPayloadTypeConverter::class)

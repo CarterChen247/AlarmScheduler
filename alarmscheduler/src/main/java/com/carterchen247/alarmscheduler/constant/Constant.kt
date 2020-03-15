@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.constant
 
 object Constant {
     const val ALARM_TYPE = "ALARM_TYPE"

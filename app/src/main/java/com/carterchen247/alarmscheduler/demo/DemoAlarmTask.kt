@@ -1,7 +1,7 @@
 package com.carterchen247.alarmscheduler.demo
 
-import com.carterchen247.alarmscheduler.AlarmTask
-import com.carterchen247.alarmscheduler.DataPayload
+import com.carterchen247.alarmscheduler.model.DataPayload
+import com.carterchen247.alarmscheduler.task.AlarmTask
 import timber.log.Timber
 
 class DemoAlarmTask : AlarmTask {

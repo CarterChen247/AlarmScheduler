@@ -2,8 +2,8 @@ package com.carterchen247.alarmscheduler.demo
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.carterchen247.alarmscheduler.AlarmConfig
-import com.carterchen247.alarmscheduler.DataPayload
+import com.carterchen247.alarmscheduler.model.AlarmConfig
+import com.carterchen247.alarmscheduler.model.DataPayload
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 

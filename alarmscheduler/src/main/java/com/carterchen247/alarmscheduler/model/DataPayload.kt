@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.model
 
 import android.os.Bundle
 
