@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler.db.converter
+package com.carterchen247.alarmscheduler.storage.converter
 
 import androidx.room.TypeConverter
 import com.carterchen247.alarmscheduler.model.DataPayload

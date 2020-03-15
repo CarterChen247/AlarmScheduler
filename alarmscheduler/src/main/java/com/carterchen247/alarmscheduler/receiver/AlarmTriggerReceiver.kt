@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.constant.Constant
-import com.carterchen247.alarmscheduler.db.AlarmSchedulerDatabase
-import com.carterchen247.alarmscheduler.db.AlarmStateEntity
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
+import com.carterchen247.alarmscheduler.storage.AlarmSchedulerDatabase
+import com.carterchen247.alarmscheduler.storage.AlarmStateEntity
 import io.reactivex.schedulers.Schedulers
 
 class AlarmTriggerReceiver : BroadcastReceiver() {

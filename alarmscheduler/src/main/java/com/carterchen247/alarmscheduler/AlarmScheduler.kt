@@ -6,16 +6,16 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
-import com.carterchen247.alarmscheduler.db.AlarmSchedulerDatabase
-import com.carterchen247.alarmscheduler.db.AlarmStateEntity
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
+import com.carterchen247.alarmscheduler.storage.AlarmSchedulerDatabase
+import com.carterchen247.alarmscheduler.storage.AlarmStateEntity
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import io.reactivex.schedulers.Schedulers
 
-class AlarmScheduler private constructor(val context: Context) {
+class AlarmScheduler private constructor(private val context: Context) {
 
     private val alarmStateDao = AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao()
     private var alarmTaskFactory: AlarmTaskFactory? = null

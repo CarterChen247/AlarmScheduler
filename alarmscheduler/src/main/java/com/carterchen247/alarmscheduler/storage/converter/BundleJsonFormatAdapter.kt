@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler.db.converter
+package com.carterchen247.alarmscheduler.storage.converter
 
 import android.os.Bundle
 

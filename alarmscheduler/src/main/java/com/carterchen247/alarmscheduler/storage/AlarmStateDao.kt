@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler.db
+package com.carterchen247.alarmscheduler.storage
 
 import androidx.room.*
 import io.reactivex.Completable

@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler.db
+package com.carterchen247.alarmscheduler.storage
 
 import android.content.Context
 import androidx.room.Database
