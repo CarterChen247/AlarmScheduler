@@ -18,6 +18,7 @@ class AlarmScheduler private constructor(private val context: Context) {
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
+    private val idProvider = AlarmIdCounter.getInstance(context)
 
     companion object {
         @Volatile
@@ -46,16 +47,17 @@ class AlarmScheduler private constructor(private val context: Context) {
         }
     }
 
-    internal fun schedule(alarmInfo: AlarmInfo) {
-        Logger.d("schedule alarm=$alarmInfo")
-        val d = alarmStateRepository.add(alarmInfo)
-            .map { it.toInt() }
-            .subscribe({ alarmId ->
-                val correctIdInfo = alarmInfo.copy(alarmId = alarmId)
-                scheduleAlarm(correctIdInfo)
+    internal fun schedule(alarmInfo: AlarmInfo): Int {
+        val id = idProvider.generateId(alarmInfo.alarmId)
+        val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
+        Logger.d("schedule alarm=$calibratedAlarmInfo")
+        val d = alarmStateRepository.add(calibratedAlarmInfo)
+            .subscribe({
+                scheduleAlarm(calibratedAlarmInfo)
             }, {
                 Logger.e("failed getting alarm id when scheduling. error=$it")
             })
+        return id
     }
 
     private fun scheduleAlarm(alarmInfo: AlarmInfo) {
