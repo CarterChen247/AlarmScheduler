@@ -18,7 +18,7 @@ class AlarmScheduler private constructor(private val context: Context) {
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
-    private val idProvider = AlarmIdCounter.getInstance(context)
+    private val idProvider = AlarmIdProvider.getInstance(context)
 
     companion object {
         @Volatile

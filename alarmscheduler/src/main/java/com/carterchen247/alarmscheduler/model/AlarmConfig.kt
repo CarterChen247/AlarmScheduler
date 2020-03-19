@@ -1,6 +1,6 @@
 package com.carterchen247.alarmscheduler.model
 
-import com.carterchen247.alarmscheduler.AlarmIdCounter
+import com.carterchen247.alarmscheduler.AlarmIdProvider
 import com.carterchen247.alarmscheduler.AlarmScheduler
 
 class AlarmConfig(
@@ -8,7 +8,7 @@ class AlarmConfig(
     private val triggerTime: Long,
     block: (AlarmConfig.() -> Unit)? = null
 ) {
-    private var alarmId: Int = AlarmIdCounter.AUTO_GENERATE
+    private var alarmId: Int = AlarmIdProvider.AUTO_GENERATE
     private var dataPayload: DataPayload? = null
 
     init {

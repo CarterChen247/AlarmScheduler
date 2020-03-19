@@ -1,14 +1,14 @@
 package com.carterchen247.alarmscheduler.model
 
-import com.carterchen247.alarmscheduler.AlarmIdCounter
+import com.carterchen247.alarmscheduler.AlarmIdProvider
 
 data class AlarmInfo(
     val alarmType: Int,
     val triggerTime: Long,
-    var alarmId: Int = AlarmIdCounter.AUTO_GENERATE,
+    var alarmId: Int = AlarmIdProvider.AUTO_GENERATE,
     var dataPayload: DataPayload? = null
 ) {
     fun autoGenerateId(): Boolean {
-        return alarmId == AlarmIdCounter.AUTO_GENERATE
+        return alarmId == AlarmIdProvider.AUTO_GENERATE
     }
 }
