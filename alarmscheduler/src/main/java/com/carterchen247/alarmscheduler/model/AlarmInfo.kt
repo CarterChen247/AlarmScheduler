@@ -7,8 +7,4 @@ data class AlarmInfo(
     val triggerTime: Long,
     var alarmId: Int = AlarmIdProvider.AUTO_GENERATE,
     var dataPayload: DataPayload? = null
-) {
-    fun autoGenerateId(): Boolean {
-        return alarmId == AlarmIdProvider.AUTO_GENERATE
-    }
-}
+)

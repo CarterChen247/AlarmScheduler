@@ -13,7 +13,7 @@ data class AlarmStateEntity(
     val type: Int = -1,
     val triggerTime: Long = -1,
     val dataPayload: DataPayload? = null,
-    @PrimaryKey(autoGenerate = true) val id: Int = 0
+    @PrimaryKey val id: Int = 0
 ) {
     companion object {
         fun create(alarmInfo: AlarmInfo): AlarmStateEntity {
@@ -22,7 +22,7 @@ data class AlarmStateEntity(
                     alarmType,
                     triggerTime,
                     dataPayload,
-                    if (autoGenerateId()) 0 else alarmId
+                    alarmId
                 )
             }
         }
