@@ -23,8 +23,8 @@ class AlarmConfig(
         this.dataPayload = dataPayload
     }
 
-    fun schedule() {
-        AlarmScheduler.getInstance().schedule(getInfo())
+    fun schedule(): Int {
+        return AlarmScheduler.getInstance().schedule(getInfo())
     }
 
     internal fun getInfo(): AlarmInfo {
