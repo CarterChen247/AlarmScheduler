@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
             Timber.d("schedule an alarm")
 
             // schedule an alarm
-            AlarmConfig(DemoAlarmTask.TYPE, System.currentTimeMillis() + 10000L) {
+            AlarmConfig(System.currentTimeMillis() + 10000L, DemoAlarmTask.TYPE) {
                 dataPayload(DataPayload().apply { putString("reminder", "have a meeting") })
             }.schedule()
         }

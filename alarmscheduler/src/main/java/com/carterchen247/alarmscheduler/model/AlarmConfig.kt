@@ -4,8 +4,8 @@ import com.carterchen247.alarmscheduler.AlarmIdProvider
 import com.carterchen247.alarmscheduler.AlarmScheduler
 
 class AlarmConfig(
-    private val type: Int,
     private val triggerTime: Long,
+    private val type: Int = 0,
     block: (AlarmConfig.() -> Unit)? = null
 ) {
     private var alarmId: Int = AlarmIdProvider.AUTO_GENERATE
