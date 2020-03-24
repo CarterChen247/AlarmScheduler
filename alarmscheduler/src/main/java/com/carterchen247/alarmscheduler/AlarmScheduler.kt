@@ -45,6 +45,10 @@ class AlarmScheduler private constructor(private val context: Context) {
         fun setLogger(logger: AlarmSchedulerLogger?) {
             getInstance().logger.logger = logger
         }
+
+        fun cancelAlarmTask(alarmId: Int) {
+            getInstance().cancelAlarmTask(alarmId)
+        }
     }
 
     internal fun schedule(alarmInfo: AlarmInfo): Int {
