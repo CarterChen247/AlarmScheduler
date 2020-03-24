@@ -12,8 +12,8 @@ class AlarmConfigTest {
             id(3)
         }
         val alarmInfo = config.getInfo()
-        assertEquals(1, alarmInfo.alarmType)
-        assertEquals(2, alarmInfo.triggerTime)
+        assertEquals(1, alarmInfo.triggerTime)
+        assertEquals(2, alarmInfo.alarmType)
         assertEquals(3, alarmInfo.alarmId)
     }
 }
