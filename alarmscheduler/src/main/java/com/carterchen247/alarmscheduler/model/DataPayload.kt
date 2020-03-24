@@ -55,7 +55,7 @@ class DataPayload {
     }
 
     companion object {
-        fun create(bundle: Bundle?): DataPayload {
+        internal fun create(bundle: Bundle?): DataPayload {
             if (bundle == null) {
                 return DataPayload()
             }
