@@ -49,6 +49,10 @@ class AlarmScheduler private constructor(private val context: Context) {
         fun cancelAlarmTask(alarmId: Int) {
             getInstance().cancelAlarmTask(alarmId)
         }
+
+        fun isAlarmTaskRunning(alarmId: Int): Boolean {
+            return getInstance().getPendingIntentById(alarmId) != null
+        }
     }
 
     internal fun schedule(alarmInfo: AlarmInfo): Int {
@@ -106,10 +110,6 @@ class AlarmScheduler private constructor(private val context: Context) {
                     cancelAlarmTask(it.alarmId)
                 }
             }
-    }
-
-    fun isAlarmTaskRunning(alarmId: Int): Boolean {
-        return getPendingIntentById(alarmId) != null
     }
 
     private fun getPendingIntentById(alarmId: Int): PendingIntent? {
