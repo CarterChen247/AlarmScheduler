@@ -69,7 +69,7 @@ class AlarmScheduler private constructor(private val context: Context) {
     }
 
     private fun scheduleAlarm(alarmInfo: AlarmInfo) {
-        Logger.d("scheduleAlarm alarm=$alarmInfo")
+        Logger.d("scheduleAlarm() alarm=$alarmInfo")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -78,6 +78,7 @@ class AlarmScheduler private constructor(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
+        Logger.d("AlarmManagerCompat.setExactAndAllowWhileIdle()")
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager as AlarmManager,
             AlarmManager.RTC_WAKEUP,
@@ -95,6 +96,7 @@ class AlarmScheduler private constructor(private val context: Context) {
     }
 
     fun cancelAlarmTask(alarmId: Int) {
+        Logger.d("cancelAlarmTask()")
         getPendingIntentById(alarmId)?.let {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
@@ -104,6 +106,7 @@ class AlarmScheduler private constructor(private val context: Context) {
     }
 
     fun cancelAllAlarmTasks() {
+        Logger.d("cancelAllAlarmTasks()")
         val d = alarmStateRepository.getAll()
             .subscribe { tasks ->
                 tasks.forEach {
@@ -123,6 +126,7 @@ class AlarmScheduler private constructor(private val context: Context) {
     }
 
     fun rescheduleAlarms() {
+        Logger.d("rescheduleAlarms()")
         val d = alarmStateRepository.getAll()
             .subscribe({ alarmInfos ->
                 Logger.d("rescheduleAlarms count=${alarmInfos.size}")
