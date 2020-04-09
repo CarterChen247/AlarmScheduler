@@ -6,20 +6,12 @@ class DataPayload {
 
     private var bundle = Bundle()
 
-    fun putInt(key: String, value: Int) {
-        bundle.putInt(key, value)
-    }
-
-    fun getInt(key: String): Int {
-        return bundle.getInt(key)
-    }
-
     fun putLong(key: String, value: Long) {
         bundle.putLong(key, value)
     }
 
     fun getLong(key: String): Long {
-        return bundle.getLong(key) // TODO test value
+        return bundle.getLong(key)
     }
 
     fun putString(key: String, value: String) {
