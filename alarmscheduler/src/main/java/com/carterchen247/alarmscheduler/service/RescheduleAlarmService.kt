@@ -6,7 +6,7 @@ import androidx.core.app.JobIntentService
 import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.logger.Logger
 
-class RescheduleAlarmService : JobIntentService() {
+internal class RescheduleAlarmService : JobIntentService() {
 
     companion object {
         private const val JOB_ID = 9453

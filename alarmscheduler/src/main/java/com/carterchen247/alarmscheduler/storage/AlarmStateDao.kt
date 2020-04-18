@@ -5,7 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
-interface AlarmStateDao {
+internal interface AlarmStateDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEntity(entity: AlarmStateEntity): Single<Long>
 
