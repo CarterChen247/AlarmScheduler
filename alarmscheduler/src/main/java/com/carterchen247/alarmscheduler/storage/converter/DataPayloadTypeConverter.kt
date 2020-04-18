@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.room.TypeConverter
 import com.carterchen247.alarmscheduler.model.DataPayload
 
-class DataPayloadTypeConverter {
+internal class DataPayloadTypeConverter {
 
     private val adapter: BundleJsonFormatAdapter = SimpleBundleJsonFormatAdapter()
 

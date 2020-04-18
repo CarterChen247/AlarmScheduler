@@ -7,7 +7,7 @@ import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.service.RescheduleAlarmService
 
 
-class RebootCompleteReceiver : BroadcastReceiver() {
+internal class RebootCompleteReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         Logger.d("RebootCompleteReceiver onReceive")

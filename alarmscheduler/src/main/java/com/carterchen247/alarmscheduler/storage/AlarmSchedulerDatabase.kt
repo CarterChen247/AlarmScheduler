@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
     entities = [AlarmStateEntity::class],
     version = 1
 )
-abstract class AlarmSchedulerDatabase : RoomDatabase() {
+internal abstract class AlarmSchedulerDatabase : RoomDatabase() {
 
     abstract fun getAlarmStateDao(): AlarmStateDao
 

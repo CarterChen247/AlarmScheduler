@@ -9,7 +9,7 @@ import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 
-class AlarmTriggerReceiver : BroadcastReceiver() {
+internal class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Logger.d("AlarmTriggerReceiver.onReceive")
         val alarmType = intent.getIntExtra(Constant.ALARM_TYPE, Constant.VALUE_NOT_ASSIGN)

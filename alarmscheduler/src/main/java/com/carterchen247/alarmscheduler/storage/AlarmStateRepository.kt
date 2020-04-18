@@ -5,7 +5,7 @@ import com.carterchen247.alarmscheduler.model.AlarmInfo
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-class AlarmStateRepository private constructor(context: Context) {
+internal class AlarmStateRepository private constructor(context: Context) {
 
     private val alarmStateDao = AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao()
 

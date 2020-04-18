@@ -3,7 +3,7 @@ package com.carterchen247.alarmscheduler.storage.converter
 import android.os.Bundle
 import org.json.JSONObject
 
-class SimpleBundleJsonFormatAdapter : BundleJsonFormatAdapter {
+internal class SimpleBundleJsonFormatAdapter : BundleJsonFormatAdapter {
 
     override fun toJson(bundle: Bundle): String {
         val jsonObject = JSONObject()

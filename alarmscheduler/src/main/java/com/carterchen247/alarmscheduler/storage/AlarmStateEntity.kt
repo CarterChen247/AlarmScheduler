@@ -9,7 +9,7 @@ import com.carterchen247.alarmscheduler.storage.converter.DataPayloadTypeConvert
 
 @Entity
 @TypeConverters(DataPayloadTypeConverter::class)
-data class AlarmStateEntity(
+internal data class AlarmStateEntity(
     val type: Int = -1,
     val triggerTime: Long = -1,
     val dataPayload: DataPayload? = null,
