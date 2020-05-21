@@ -19,7 +19,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
             return
         }
-        val alarmTaskFactory = AlarmScheduler.getInstance(context).getAlarmTaskFactory()
+        val alarmTaskFactory = AlarmScheduler.getImpl().getAlarmTaskFactory()
         if (alarmTaskFactory == null) {
             Logger.d("Failed creating AlarmTask, alarmTaskFactory is null")
             return
