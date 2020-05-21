@@ -18,7 +18,7 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
-    private val idProvider = AlarmIdProvider.getInstance(context)
+    private val idProvider by lazy { AlarmIdProvider(context) }
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
         this.alarmTaskFactory = alarmTaskFactory

@@ -7,14 +7,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class AlarmIdProviderImplTest {
+class AlarmIdProviderTest {
 
-    private lateinit var impl: AlarmIdProviderImpl
+    private lateinit var impl: AlarmIdProvider
 
     @Before
     fun setUp() {
         val appContext: Context = ApplicationProvider.getApplicationContext()
-        impl = AlarmIdProviderImpl(appContext)
+        impl = AlarmIdProvider(appContext)
     }
 
     @After
