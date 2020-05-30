@@ -8,6 +8,7 @@ import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
@@ -32,7 +33,9 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         } catch (throwable: Throwable) {
             Logger.d("Failed creating AlarmTask. throwable=$throwable")
         }
-        AlarmScheduler.getImpl().coroutineScope.launch {
+        AlarmScheduler.getImpl().coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            Logger.d("Failed removing fired alarmId. throwable=$throwable")
+        }) {
             AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
         }
     }

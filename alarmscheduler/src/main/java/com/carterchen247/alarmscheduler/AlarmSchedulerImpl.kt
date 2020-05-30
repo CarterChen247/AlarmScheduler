@@ -12,6 +12,7 @@ import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -38,7 +39,9 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
             pendingIntent.cancel()
-            coroutineScope.launch {
+            coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+                Logger.e("cancelAlarmTask failed. error=$throwable")
+            }) {
                 alarmStateRepository.removeImmediately(alarmId)
             }
         }
@@ -50,7 +53,9 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
 
     override fun cancelAllAlarmTasks() {
         Logger.d("cancelAllAlarmTasks()")
-        coroutineScope.launch {
+        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            Logger.e("cancelAllAlarmTasks failed. error=$throwable")
+        }) {
             alarmStateRepository.getAll()
                 .forEach {
                     cancelAlarmTask(it.alarmId)
@@ -70,7 +75,9 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
 
     fun rescheduleAlarms() {
         Logger.d("rescheduleAlarms()")
-        coroutineScope.launch {
+        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            Logger.e("rescheduleAlarms failed. error=$throwable")
+        }) {
             alarmStateRepository.getAll()
                 .also {
                     Logger.d("rescheduleAlarms count=${it.size}")
@@ -85,7 +92,10 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
         val id = idProvider.generateId(alarmInfo.alarmId)
         val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
         Logger.d("schedule alarm=$calibratedAlarmInfo")
-        coroutineScope.launch {
+
+        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            Logger.e("failed schedule an alarm. error=$throwable")
+        }) {
             alarmStateRepository.add(calibratedAlarmInfo)
             scheduleAlarm(calibratedAlarmInfo)
         }
