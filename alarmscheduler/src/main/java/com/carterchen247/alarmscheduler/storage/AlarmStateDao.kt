@@ -1,17 +1,15 @@
 package com.carterchen247.alarmscheduler.storage
 
 import androidx.room.*
-import io.reactivex.Completable
-import io.reactivex.Single
 
 @Dao
 internal interface AlarmStateDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertEntity(entity: AlarmStateEntity): Single<Long>
+    suspend fun insertEntity(entity: AlarmStateEntity): Long
 
     @Delete
-    fun removeEntity(alarmStateEntity: AlarmStateEntity): Completable
+    suspend fun removeEntity(alarmStateEntity: AlarmStateEntity)
 
     @Query("SELECT * FROM AlarmStateEntity")
-    fun selectAll(): Single<List<AlarmStateEntity>>
+    suspend fun selectAll(): List<AlarmStateEntity>
 }

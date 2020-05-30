@@ -12,6 +12,9 @@ import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 internal class AlarmSchedulerImpl private constructor(private val context: Context) : AlarmSchedulerContract {
 
@@ -19,6 +22,7 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
     private var logger = Logger
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
     private val idProvider by lazy { AlarmIdProvider(context) }
+    val coroutineScope by lazy { CoroutineScope(SupervisorJob()) }
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
         this.alarmTaskFactory = alarmTaskFactory
@@ -30,11 +34,13 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
 
     override fun cancelAlarmTask(alarmId: Int) {
         Logger.d("cancelAlarmTask()")
-        getPendingIntentById(alarmId)?.let {
+        getPendingIntentById(alarmId)?.let { pendingIntent ->
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.cancel(it)
-            it.cancel()
-            alarmStateRepository.removeImmediately(alarmId)
+            alarmManager.cancel(pendingIntent)
+            pendingIntent.cancel()
+            coroutineScope.launch {
+                alarmStateRepository.removeImmediately(alarmId)
+            }
         }
     }
 
@@ -44,12 +50,12 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
 
     override fun cancelAllAlarmTasks() {
         Logger.d("cancelAllAlarmTasks()")
-        val d = alarmStateRepository.getAll()
-            .subscribe { tasks ->
-                tasks.forEach {
+        coroutineScope.launch {
+            alarmStateRepository.getAll()
+                .forEach {
                     cancelAlarmTask(it.alarmId)
                 }
-            }
+        }
     }
 
     private fun getPendingIntentById(alarmId: Int): PendingIntent? {
@@ -64,25 +70,25 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
 
     fun rescheduleAlarms() {
         Logger.d("rescheduleAlarms()")
-        val d = alarmStateRepository.getAll()
-            .subscribe({ alarmInfos ->
-                Logger.d("rescheduleAlarms count=${alarmInfos.size}")
-                alarmInfos.forEach { schedule(it) }
-            }, {
-                Logger.e("rescheduleAlarms failed. error=$it")
-            })
+        coroutineScope.launch {
+            alarmStateRepository.getAll()
+                .also {
+                    Logger.d("rescheduleAlarms count=${it.size}")
+                }
+                .forEach {
+                    schedule(it)
+                }
+        }
     }
 
     fun schedule(alarmInfo: AlarmInfo): Int {
         val id = idProvider.generateId(alarmInfo.alarmId)
         val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
         Logger.d("schedule alarm=$calibratedAlarmInfo")
-        val d = alarmStateRepository.add(calibratedAlarmInfo)
-            .subscribe({
-                scheduleAlarm(calibratedAlarmInfo)
-            }, {
-                Logger.e("failed getting alarm id when scheduling. error=$it")
-            })
+        coroutineScope.launch {
+            alarmStateRepository.add(calibratedAlarmInfo)
+            scheduleAlarm(calibratedAlarmInfo)
+        }
         return id
     }
 
