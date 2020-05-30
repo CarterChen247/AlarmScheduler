@@ -7,14 +7,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.carterchen247.alarmscheduler.storage.AlarmSchedulerDatabase
 import com.carterchen247.alarmscheduler.storage.AlarmStateDao
 import com.carterchen247.alarmscheduler.storage.AlarmStateEntity
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class RoomAlarmStateEntityTest {
+internal class RoomAlarmStateEntityTest {
     private lateinit var db: AlarmSchedulerDatabase
     private lateinit var dao: AlarmStateDao
 
@@ -34,19 +35,11 @@ class RoomAlarmStateEntityTest {
     }
 
     @Test
-    fun insertId() {
+    fun insertId() = runBlocking {
         dao.insertEntity(AlarmStateEntity(id = 1))
-            .subscribeOn(Schedulers.trampoline())
-            .subscribe()
         dao.insertEntity(AlarmStateEntity(id = 2))
-            .subscribeOn(Schedulers.trampoline())
-            .subscribe()
-        dao.selectAll()
-            .subscribeOn(Schedulers.trampoline())
-            .test()
-            .assertValue {
-                it.size == 2
-            }
+        val items = dao.selectAll()
+        assertEquals(2, items.size)
     }
 
     /**
@@ -55,18 +48,10 @@ class RoomAlarmStateEntityTest {
      * android.database.sqlite.SQLiteConstraintException: UNIQUE constraint failed: AlarmStateEntity.id
      */
     @Test
-    fun replaceIdWhenIdConflicts() {
+    fun replaceIdWhenIdConflicts() = runBlocking {
         dao.insertEntity(AlarmStateEntity(id = 1))
-            .subscribeOn(Schedulers.trampoline())
-            .subscribe()
         dao.insertEntity(AlarmStateEntity(id = 1))
-            .subscribeOn(Schedulers.trampoline())
-            .subscribe()
-        dao.selectAll()
-            .subscribeOn(Schedulers.trampoline())
-            .test()
-            .assertValue {
-                it.size == 1
-            }
+        val items = dao.selectAll()
+        assertEquals(1, items.size)
     }
 }

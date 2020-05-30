@@ -2,37 +2,29 @@ package com.carterchen247.alarmscheduler.storage
 
 import android.content.Context
 import com.carterchen247.alarmscheduler.model.AlarmInfo
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 
 internal class AlarmStateRepository private constructor(context: Context) {
 
     private val alarmStateDao = AlarmSchedulerDatabase.getInstance(context).getAlarmStateDao()
 
-    fun add(alarmInfo: AlarmInfo): Single<Long> {
+    suspend fun add(alarmInfo: AlarmInfo): Long {
         return alarmStateDao.insertEntity(AlarmStateEntity.create(alarmInfo))
-            .subscribeOn(Schedulers.io())
     }
 
-    fun getAll(): Single<List<AlarmInfo>> {
+    suspend fun getAll(): List<AlarmInfo> {
         return alarmStateDao.selectAll()
-            .subscribeOn(Schedulers.io())
-            .map { entities ->
-                entities.map {
-                    AlarmInfo(
-                        it.type,
-                        it.triggerTime,
-                        it.id,
-                        it.dataPayload
-                    )
-                }
+            .map {
+                AlarmInfo(
+                    it.type,
+                    it.triggerTime,
+                    it.id,
+                    it.dataPayload
+                )
             }
     }
 
-    fun removeImmediately(id: Int) {
+    suspend fun removeImmediately(id: Int) {
         alarmStateDao.removeEntity(AlarmStateEntity(id = id))
-            .subscribeOn(Schedulers.io())
-            .subscribe()
     }
 
     companion object {

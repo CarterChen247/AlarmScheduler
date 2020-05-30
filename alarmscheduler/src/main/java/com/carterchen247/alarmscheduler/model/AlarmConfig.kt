@@ -24,7 +24,7 @@ class AlarmConfig(
     }
 
     fun schedule(): Int {
-        return AlarmScheduler.getInstance().schedule(getInfo())
+        return AlarmScheduler.getImpl().schedule(getInfo())
     }
 
     internal fun getInfo(): AlarmInfo {

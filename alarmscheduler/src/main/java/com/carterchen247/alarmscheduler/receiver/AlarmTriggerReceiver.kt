@@ -8,6 +8,8 @@ import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -19,7 +21,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
             return
         }
-        val alarmTaskFactory = AlarmScheduler.getInstance(context).getAlarmTaskFactory()
+        val alarmTaskFactory = AlarmScheduler.getImpl().getAlarmTaskFactory()
         if (alarmTaskFactory == null) {
             Logger.d("Failed creating AlarmTask, alarmTaskFactory is null")
             return
@@ -31,6 +33,10 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         } catch (throwable: Throwable) {
             Logger.d("Failed creating AlarmTask. throwable=$throwable")
         }
-        AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
+        AlarmScheduler.getImpl().coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            Logger.d("Failed removing fired alarmId. throwable=$throwable")
+        }) {
+            AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
+        }
     }
 }
