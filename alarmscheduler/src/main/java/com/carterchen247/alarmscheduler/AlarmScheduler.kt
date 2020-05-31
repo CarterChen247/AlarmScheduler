@@ -2,7 +2,7 @@ package com.carterchen247.alarmscheduler
 
 import android.content.Context
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
-import com.carterchen247.alarmscheduler.model.AlarmSchedulerResultCallback
+import com.carterchen247.alarmscheduler.model.AlarmTaskCountCallback
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import java.util.concurrent.CountDownLatch
 
@@ -42,7 +42,7 @@ object AlarmScheduler : AlarmSchedulerContract {
         getImpl().cancelAllAlarmTasks()
     }
 
-    override fun getScheduledAlarmTaskCountAsync(callback: AlarmSchedulerResultCallback<Int>) {
+    override fun getScheduledAlarmTaskCountAsync(callback: AlarmTaskCountCallback) {
         getImpl().getScheduledAlarmTaskCountAsync(callback)
     }
 }

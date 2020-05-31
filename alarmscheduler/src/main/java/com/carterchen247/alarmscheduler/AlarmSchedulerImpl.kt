@@ -9,7 +9,7 @@ import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.AlarmInfo
-import com.carterchen247.alarmscheduler.model.AlarmSchedulerResultCallback
+import com.carterchen247.alarmscheduler.model.AlarmTaskCountCallback
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
@@ -66,7 +66,7 @@ internal class AlarmSchedulerImpl private constructor(
         }
     }
 
-    override fun getScheduledAlarmTaskCountAsync(callback: AlarmSchedulerResultCallback<Int>) {
+    override fun getScheduledAlarmTaskCountAsync(callback: AlarmTaskCountCallback) {
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
             Logger.e("getScheduledAlarmTaskCountAsync failed. error=$throwable")
         }) {
