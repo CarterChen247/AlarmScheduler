@@ -8,7 +8,7 @@ This is an utils library to help to schedule time exact tasks(Calendar reminders
 ## Setup
 
 ```
-implementation 'com.carterchen247:alarm-scheduler:0.9.2.0'
+implementation 'com.carterchen247:alarm-scheduler:1.0.0'
 ```
 
 ##  Usage
