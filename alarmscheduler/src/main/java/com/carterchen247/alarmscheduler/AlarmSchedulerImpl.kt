@@ -9,6 +9,7 @@ import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.AlarmInfo
+import com.carterchen247.alarmscheduler.model.AlarmSchedulerResultCallback
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
@@ -35,6 +36,10 @@ internal class AlarmSchedulerImpl private constructor(
         this.logger.logger = logger
     }
 
+    override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
+        return getPendingIntentById(alarmId) != null
+    }
+
     override fun cancelAlarmTask(alarmId: Int) {
         Logger.d("cancelAlarmTask()")
         getPendingIntentById(alarmId)?.let { pendingIntent ->
@@ -49,10 +54,6 @@ internal class AlarmSchedulerImpl private constructor(
         }
     }
 
-    override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
-        return getPendingIntentById(alarmId) != null
-    }
-
     override fun cancelAllAlarmTasks() {
         Logger.d("cancelAllAlarmTasks()")
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
@@ -62,6 +63,21 @@ internal class AlarmSchedulerImpl private constructor(
                 .forEach {
                     cancelAlarmTask(it.alarmId)
                 }
+        }
+    }
+
+    override fun getScheduledAlarmTaskCountAsync(callback: AlarmSchedulerResultCallback<Int>) {
+        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
+            Logger.e("getScheduledAlarmTaskCountAsync failed. error=$throwable")
+        }) {
+            var count = 0
+            alarmStateRepository.getAll()
+                .forEach {
+                    if (isAlarmTaskScheduled(it.alarmId)) {
+                        count++
+                    }
+                }
+            callback.onResult(count)
         }
     }
 
