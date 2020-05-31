@@ -28,8 +28,8 @@ object AlarmScheduler : AlarmSchedulerContract {
         getImpl().cancelAlarmTask(alarmId)
     }
 
-    override fun isAlarmTaskRunning(alarmId: Int): Boolean {
-        return getImpl().isAlarmTaskRunning(alarmId)
+    override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
+        return getImpl().isAlarmTaskScheduled(alarmId)
     }
 
     override fun cancelAllAlarmTasks() {

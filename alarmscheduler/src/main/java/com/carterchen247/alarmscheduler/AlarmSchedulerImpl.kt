@@ -17,7 +17,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-internal class AlarmSchedulerImpl private constructor(private val context: Context) : AlarmSchedulerContract {
+internal class AlarmSchedulerImpl private constructor(
+    private val context: Context
+) : AlarmSchedulerContract {
 
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
@@ -47,7 +49,7 @@ internal class AlarmSchedulerImpl private constructor(private val context: Conte
         }
     }
 
-    override fun isAlarmTaskRunning(alarmId: Int): Boolean {
+    override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
         return getPendingIntentById(alarmId) != null
     }
 
