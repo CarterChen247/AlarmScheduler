@@ -6,6 +6,9 @@ import android.content.Context.MODE_PRIVATE
 import androidx.annotation.VisibleForTesting
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * responsible for creating unique ids for alarms
+ */
 internal class AlarmIdProvider(context: Context) {
 
     private val sharedPreference = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE)
