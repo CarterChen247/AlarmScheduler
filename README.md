@@ -1,5 +1,10 @@
 # AlarmScheduler
 
+![](https://img.shields.io/bintray/v/kazafchen/Library/alarm-scheduler?label=version) 
+![](https://img.shields.io/github/languages/top/CarterChen247/AlarmScheduler)
+![](https://img.shields.io/github/workflow/status/CarterChen247/AlarmScheduler/Test/master)
+
+
 Since WorkManager handles the tasks which are guaranteed to be executed and it does not support time-exact tasks, we provide a library which helps to schedule task which is needed to be triggered at a specific time. (like calendar reminders, alarms, etc.)
 
 **AlarmScheduler** is build on top of **AlarmManager** + **Kotlin Coroutines** + **Room**.
@@ -8,7 +13,7 @@ Since WorkManager handles the tasks which are guaranteed to be executed and it
 
 ```
 dependencies {
-    implementation 'com.carterchen247:alarm-scheduler:1.0.0'
+    implementation 'com.carterchen247:alarm-scheduler:x.x.x'
 }
 ```
 
