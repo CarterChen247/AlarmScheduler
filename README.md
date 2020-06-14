@@ -62,8 +62,7 @@ internal interface AlarmSchedulerContract {
 
 ## Apps using AlarmScheduler
 
-![https://play.google.com/store/apps/details?id=com.carterchen247.garbagetruckalarm&hl=zh_TW](https://i.imgur.com/mKQWvcg.png)
-
+- [吉時倒垃圾(GarbageTruckAlarm)](https://play.google.com/store/apps/details?id=com.carterchen247.garbagetruckalarm&hl=zh_TW)
 
 ## License
 
