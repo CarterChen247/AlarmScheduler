@@ -130,11 +130,11 @@ internal class AlarmSchedulerImpl private constructor(
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
-        Logger.d("AlarmManagerCompat.setExactAndAllowWhileIdle()")
-        AlarmManagerCompat.setExactAndAllowWhileIdle(
+        Logger.d("AlarmManagerCompat.setAlarmClock()")
+        AlarmManagerCompat.setAlarmClock(
             alarmManager as AlarmManager,
-            AlarmManager.RTC_WAKEUP,
             alarmInfo.triggerTime,
+            pendingIntent,
             pendingIntent
         )
     }
