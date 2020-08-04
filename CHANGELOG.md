@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.1...v1.0.2) (2020-08-04)
+
+
+### Features
+
+* change scheduleAlarm implementation from setExactAndAllowWhileIdle to setAlarmClock ([8047574](https://github.com/CarterChen247/AlarmScheduler/commit/80475744b424e0e31b0b5bfe8af08e05a826e19b))
+
 ### [1.0.1](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.0...v1.0.1) (2020-07-24)
 
 
