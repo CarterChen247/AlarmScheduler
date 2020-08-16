@@ -1,7 +1,7 @@
 package com.carterchen247.alarmscheduler
 
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
-import com.carterchen247.alarmscheduler.model.AlarmTaskCountCallback
+import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 
 /**
@@ -13,5 +13,5 @@ internal interface AlarmSchedulerContract {
     fun isAlarmTaskScheduled(alarmId: Int): Boolean
     fun cancelAlarmTask(alarmId: Int)
     fun cancelAllAlarmTasks()
-    fun getScheduledAlarmTaskCountAsync(callback: AlarmTaskCountCallback)
+    fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback)
 }

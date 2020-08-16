@@ -8,8 +8,9 @@ import com.carterchen247.alarmscheduler.demo.log.LogAdapter
 import com.carterchen247.alarmscheduler.demo.log.LogItem
 import com.carterchen247.alarmscheduler.demo.log.LogObservable
 import com.carterchen247.alarmscheduler.model.AlarmConfig
-import com.carterchen247.alarmscheduler.model.AlarmTaskCountCallback
+import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.model.DataPayload
+import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -30,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnGetScheduledTaskCount.setOnClickListener {
-            AlarmScheduler.getScheduledAlarmTaskCountAsync(object : AlarmTaskCountCallback {
-                override fun onResult(count: Int) {
-                    val msg = "scheduled alarm task count=$count"
+            AlarmScheduler.getScheduledAlarmsAsync(object : ScheduledAlarmsCallback {
+                override fun onResult(scheduledAlarms: List<AlarmInfo>) {
+                    val msg = "scheduled alarms=$scheduledAlarms"
                     Timber.d(msg)
                     runOnUiThread {
                         listAdapter.addItem(LogItem(msg))

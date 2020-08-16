@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.carterchen247.alarmscheduler.demo.R
 import kotlinx.android.synthetic.main.item_log.view.*
-import timber.log.Timber
 
 class LogAdapter : RecyclerView.Adapter<LogAdapter.ViewHolder>() {
 
@@ -26,7 +25,6 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.ViewHolder>() {
 
     fun addItem(item: LogItem) {
         items.add(item)
-        Timber.d("xxx addItem")
         notifyItemInserted(items.size - 1)
     }
 
