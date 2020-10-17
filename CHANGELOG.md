@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.4](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.3...v1.0.4) (2020-10-17)
+
+
+### Features
+
+* add Global error handler for user ([08cdece](https://github.com/CarterChen247/AlarmScheduler/commit/08cdece25af8a85502c4863860bdc0047540bc15))
+
 ### [1.0.3](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.2...v1.0.3) (2020-08-16)
 
 
