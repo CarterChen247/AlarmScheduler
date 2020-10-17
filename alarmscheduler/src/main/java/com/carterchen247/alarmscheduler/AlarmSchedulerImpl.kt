@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
+import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
+import com.carterchen247.alarmscheduler.error.ErrorHandler
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.AlarmInfo
@@ -24,6 +26,7 @@ internal class AlarmSchedulerImpl private constructor(
 
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var logger = Logger
+    private var errorHandler = ErrorHandler
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
     private val idProvider by lazy { AlarmIdProvider(context) }
     val coroutineScope by lazy { CoroutineScope(SupervisorJob()) }
@@ -34,6 +37,10 @@ internal class AlarmSchedulerImpl private constructor(
 
     override fun setLogger(logger: AlarmSchedulerLogger?) {
         this.logger.logger = logger
+    }
+
+    override fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler) {
+        this.errorHandler.handler = errorHandler
     }
 
     override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
@@ -47,7 +54,7 @@ internal class AlarmSchedulerImpl private constructor(
             alarmManager.cancel(pendingIntent)
             pendingIntent.cancel()
             coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-                Logger.e("cancelAlarmTask failed. error=$throwable")
+                ErrorHandler.onError(IllegalStateException("cancelAlarmTask failed", throwable))
             }) {
                 alarmStateRepository.removeImmediately(alarmId)
             }
@@ -57,7 +64,7 @@ internal class AlarmSchedulerImpl private constructor(
     override fun cancelAllAlarmTasks() {
         Logger.d("cancelAllAlarmTasks()")
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            Logger.e("cancelAllAlarmTasks failed. error=$throwable")
+            ErrorHandler.onError(IllegalStateException("cancelAllAlarmTasks failed", throwable))
         }) {
             alarmStateRepository.getAll()
                 .forEach {
@@ -68,7 +75,7 @@ internal class AlarmSchedulerImpl private constructor(
 
     override fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback) {
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            Logger.e("getScheduledAlarmTaskCountAsync failed. error=$throwable")
+            ErrorHandler.onError(IllegalStateException("getScheduledAlarmTaskCountAsync failed", throwable))
         }) {
             val scheduledAlarms = alarmStateRepository.getAll().filter {
                 isAlarmTaskScheduled(it.alarmId)
@@ -90,7 +97,7 @@ internal class AlarmSchedulerImpl private constructor(
     fun rescheduleAlarms() {
         Logger.d("rescheduleAlarms()")
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            Logger.e("rescheduleAlarms failed. error=$throwable")
+            ErrorHandler.onError(IllegalStateException("rescheduleAlarms failed", throwable))
         }) {
             alarmStateRepository.getAll()
                 .also {
@@ -108,7 +115,7 @@ internal class AlarmSchedulerImpl private constructor(
         Logger.d("schedule alarm=$calibratedAlarmInfo")
 
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            Logger.e("failed schedule an alarm. error=$throwable")
+            ErrorHandler.onError(IllegalStateException("failed schedule an alarm", throwable))
         }) {
             alarmStateRepository.add(calibratedAlarmInfo)
             scheduleAlarm(calibratedAlarmInfo)

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.constant.Constant
+import com.carterchen247.alarmscheduler.error.ErrorHandler
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
@@ -23,7 +24,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         val alarmTaskFactory = AlarmScheduler.getImpl().getAlarmTaskFactory()
         if (alarmTaskFactory == null) {
-            Logger.d("Failed creating AlarmTask, alarmTaskFactory is null")
+            ErrorHandler.onError(IllegalStateException("Failed creating AlarmTask, alarmTaskFactory is null"))
             return
         }
         Logger.d("Creating AlarmTask. alarmType=$alarmType alarmId=$alarmId")
@@ -31,10 +32,10 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
             alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
         } catch (throwable: Throwable) {
-            Logger.d("Failed creating AlarmTask. throwable=$throwable")
+            ErrorHandler.onError(IllegalStateException("Failed creating AlarmTask", throwable))
         }
         AlarmScheduler.getImpl().coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            Logger.d("Failed removing fired alarmId. throwable=$throwable")
+            ErrorHandler.onError(IllegalStateException("Failed removing fired alarmId", throwable))
         }) {
             AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
         }

@@ -1,6 +1,7 @@
 package com.carterchen247.alarmscheduler
 
 import android.content.Context
+import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
@@ -28,6 +29,10 @@ object AlarmScheduler : AlarmSchedulerContract {
 
     override fun setLogger(logger: AlarmSchedulerLogger?) {
         getImpl().setLogger(logger)
+    }
+
+    override fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler) {
+        getImpl().setErrorHandler(errorHandler)
     }
 
     override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
