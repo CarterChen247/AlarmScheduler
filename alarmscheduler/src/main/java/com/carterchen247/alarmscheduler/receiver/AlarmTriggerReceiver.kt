@@ -6,6 +6,7 @@ import android.content.Intent
 import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.ErrorHandler
+import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
@@ -14,11 +15,13 @@ import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.d("The scheduled alarm goes off")
+        Logger.d(LogMessage.onAlarmTriggerReceiverOnReceive())
+
         val alarmType = intent.getIntExtra(Constant.ALARM_TYPE, Constant.VALUE_NOT_ASSIGN)
         val alarmId = intent.getIntExtra(Constant.ALARM_ID, Constant.VALUE_NOT_ASSIGN)
         val bundle = intent.getBundleExtra(Constant.ALARM_CUSTOM_DATA)
-        Logger.d("Data payloads of the scheduled alarm: alarmType=$alarmType alarmId=$alarmId bundle=$bundle")
+        Logger.d(LogMessage.onAlarmTriggerReceiverOnReceive(alarmType, alarmId, bundle))
+
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
             return
         }
@@ -27,7 +30,8 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
             ErrorHandler.onError(IllegalStateException("Failed creating AlarmTask, alarmTaskFactory is null"))
             return
         }
-        Logger.d("Creating AlarmTask triggering callback. alarmType=$alarmType alarmId=$alarmId")
+
+        Logger.d(LogMessage.onCreateAlarmTask(alarmType, alarmId))
         try {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
             alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
