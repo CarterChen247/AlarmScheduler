@@ -14,11 +14,11 @@ import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.d("AlarmTriggerReceiver.onReceive")
+        Logger.d("The scheduled alarm goes off")
         val alarmType = intent.getIntExtra(Constant.ALARM_TYPE, Constant.VALUE_NOT_ASSIGN)
         val alarmId = intent.getIntExtra(Constant.ALARM_ID, Constant.VALUE_NOT_ASSIGN)
         val bundle = intent.getBundleExtra(Constant.ALARM_CUSTOM_DATA)
-        Logger.d("AlarmTriggerReceiver.onReceive alarmType=$alarmType alarmId=$alarmId bundle=$bundle")
+        Logger.d("Data payloads of the scheduled alarm: alarmType=$alarmType alarmId=$alarmId bundle=$bundle")
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
             return
         }
@@ -27,15 +27,15 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
             ErrorHandler.onError(IllegalStateException("Failed creating AlarmTask, alarmTaskFactory is null"))
             return
         }
-        Logger.d("Creating AlarmTask. alarmType=$alarmType alarmId=$alarmId")
+        Logger.d("Creating AlarmTask triggering callback. alarmType=$alarmType alarmId=$alarmId")
         try {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
             alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
         } catch (throwable: Throwable) {
-            ErrorHandler.onError(IllegalStateException("Failed creating AlarmTask", throwable))
+            ErrorHandler.onError(IllegalStateException("Failed to create AlarmTask triggering callback", throwable))
         }
         AlarmScheduler.getImpl().coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            ErrorHandler.onError(IllegalStateException("Failed removing fired alarmId", throwable))
+            ErrorHandler.onError(IllegalStateException("Failed to removed triggered alarm id", throwable))
         }) {
             AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
         }

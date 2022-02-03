@@ -48,7 +48,7 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     override fun cancelAlarmTask(alarmId: Int) {
-        Logger.d("cancelAlarmTask()")
+        Logger.d("Function cancelAlarmTask() invoked")
         getPendingIntentById(alarmId)?.let { pendingIntent ->
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
@@ -62,7 +62,7 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     override fun cancelAllAlarmTasks() {
-        Logger.d("cancelAllAlarmTasks()")
+        Logger.d("Function cancelAllAlarmTasks() invoked")
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
             ErrorHandler.onError(IllegalStateException("cancelAllAlarmTasks failed", throwable))
         }) {
@@ -95,13 +95,13 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     fun rescheduleAlarms() {
-        Logger.d("rescheduleAlarms()")
+        Logger.d("Function rescheduleAlarms() invoked")
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
             ErrorHandler.onError(IllegalStateException("rescheduleAlarms failed", throwable))
         }) {
             alarmStateRepository.getAll()
                 .also {
-                    Logger.d("rescheduleAlarms count=${it.size}")
+                    Logger.d("Total count of rescheduled alarms=${it.size}")
                 }
                 .forEach {
                     schedule(it)
@@ -112,7 +112,7 @@ internal class AlarmSchedulerImpl private constructor(
     fun schedule(alarmInfo: AlarmInfo): Int {
         val id = idProvider.generateId(alarmInfo.alarmId)
         val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
-        Logger.d("schedule alarm=$calibratedAlarmInfo")
+        Logger.d("Received alarm scheduling command. AlarmInfo=$calibratedAlarmInfo")
 
         coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
             ErrorHandler.onError(IllegalStateException("failed schedule an alarm", throwable))
@@ -124,7 +124,7 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     private fun scheduleAlarm(alarmInfo: AlarmInfo) {
-        Logger.d("scheduleAlarm() alarm=$alarmInfo")
+        Logger.d("Start to schedule alarm. AlarmInfo=$alarmInfo")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -133,13 +133,13 @@ internal class AlarmSchedulerImpl private constructor(
             PendingIntent.FLAG_UPDATE_CURRENT
         ) ?: return
 
-        Logger.d("AlarmManagerCompat.setAlarmClock()")
         AlarmManagerCompat.setAlarmClock(
             alarmManager as AlarmManager,
             alarmInfo.triggerTime,
             pendingIntent,
             pendingIntent
         )
+        Logger.d("The alarm has been scheduled via AlarmManagerCompat")
     }
 
     private fun buildIntent(alarmInfo: AlarmInfo): Intent {
