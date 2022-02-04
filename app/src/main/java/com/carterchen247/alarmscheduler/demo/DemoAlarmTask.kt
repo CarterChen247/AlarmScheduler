@@ -1,8 +1,8 @@
 package com.carterchen247.alarmscheduler.demo
 
+import com.carterchen247.alarmscheduler.demo.log.LogObservable
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.task.AlarmTask
-import timber.log.Timber
 
 class DemoAlarmTask : AlarmTask {
 
@@ -11,6 +11,10 @@ class DemoAlarmTask : AlarmTask {
     }
 
     override fun onAlarmFires(alarmId: Int, dataPayload: DataPayload) {
-        Timber.d("alarm fires alarmId=$alarmId dataPayload.keySet=${dataPayload.keySet().toList()}")
+        val msg = """
+            The callback of the scheduled alarm triggered.
+            alarmId=$alarmId, dataPayload.keySet=${dataPayload.keySet().toList()}
+        """.trimIndent()
+        LogObservable.dispatchMessage(msg)
     }
 }

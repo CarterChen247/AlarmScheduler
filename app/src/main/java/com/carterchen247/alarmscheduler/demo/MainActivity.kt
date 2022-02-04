@@ -15,7 +15,7 @@ import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
+import java.time.LocalDateTime
 import kotlin.math.max
 
 class MainActivity : AppCompatActivity() {
@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         AlarmScheduler.getScheduledAlarmsAsync(object : ScheduledAlarmsCallback {
             override fun onResult(scheduledAlarms: List<AlarmInfo>) {
                 val msg = "scheduled alarms=$scheduledAlarms"
-                Timber.d(msg)
-                addLogItem(LogItem(msg))
+                val now = LocalDateTime.now()
+                addLogItem(LogItem(msg, now.toString()))
             }
         })
     }
@@ -58,7 +58,10 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = logItemAdapter
         }
-        LogObservable.setObserver { msg -> addLogItem(LogItem(msg)) }
+        LogObservable.setObserver { msg ->
+            val now = LocalDateTime.now()
+            addLogItem(LogItem(msg, now.toString()))
+        }
     }
 
     private fun addLogItem(item: LogItem) {

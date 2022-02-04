@@ -31,6 +31,7 @@ class LogItemAdapter : RecyclerView.Adapter<LogItemAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: LogItem) {
             itemView.tvLog.text = item.msg
+            itemView.tvTime.text = item.time
         }
     }
 }
