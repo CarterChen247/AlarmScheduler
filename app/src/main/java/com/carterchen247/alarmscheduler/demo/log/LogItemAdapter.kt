@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.carterchen247.alarmscheduler.demo.R
 import kotlinx.android.synthetic.main.item_log.view.*
 
-class LogAdapter : RecyclerView.Adapter<LogAdapter.ViewHolder>() {
+class LogItemAdapter : RecyclerView.Adapter<LogItemAdapter.ViewHolder>() {
 
     private val items = mutableListOf<LogItem>()
 
@@ -31,6 +31,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: LogItem) {
             itemView.tvLog.text = item.msg
+            itemView.tvTime.text = item.time
         }
     }
 }
