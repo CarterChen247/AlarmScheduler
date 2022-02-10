@@ -3,9 +3,9 @@ package com.carterchen247.alarmscheduler.demo.log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.carterchen247.alarmscheduler.demo.R
-import kotlinx.android.synthetic.main.item_log.view.*
 
 class LogItemAdapter : RecyclerView.Adapter<LogItemAdapter.ViewHolder>() {
 
@@ -30,8 +30,8 @@ class LogItemAdapter : RecyclerView.Adapter<LogItemAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: LogItem) {
-            itemView.tvLog.text = item.msg
-            itemView.tvTime.text = item.time
+            itemView.findViewById<TextView>(R.id.tvLog).text = item.msg
+            itemView.findViewById<TextView>(R.id.tvTime).text = item.time
         }
     }
 }
