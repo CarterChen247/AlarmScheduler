@@ -14,24 +14,24 @@ import com.carterchen247.alarmscheduler.model.AlarmConfig
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
-import kotlinx.android.synthetic.main.activity_main.*
 import java.time.LocalDateTime
 import kotlin.math.max
 
 class MainActivity : AppCompatActivity() {
 
     private val logItemAdapter = LogItemAdapter()
+    private lateinit var logList: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initLogList()
 
-        btnSchedule.setOnClickListener {
+        findViewById<View>(R.id.btnSchedule).setOnClickListener {
             scheduleDemoAlarm()
         }
 
-        btnGetScheduledAlarmsInfo.setOnClickListener {
+        findViewById<View>(R.id.btnGetScheduledAlarmsInfo).setOnClickListener {
             requestScheduledAlarmsInfo()
         }
     }
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initLogList() {
+        logList = findViewById(R.id.logList)
         logList.run {
             addItemDecoration(createItemDecoration())
             layoutManager = LinearLayoutManager(this@MainActivity)
