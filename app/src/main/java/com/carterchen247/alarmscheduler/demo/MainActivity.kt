@@ -10,11 +10,12 @@ import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.demo.log.LogItem
 import com.carterchen247.alarmscheduler.demo.log.LogItemAdapter
 import com.carterchen247.alarmscheduler.demo.log.LogObservable
-import com.carterchen247.alarmscheduler.model.AlarmConfig
+import com.carterchen247.alarmscheduler.extension.scheduleAlarm
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import java.time.LocalDateTime
+import java.util.*
 import kotlin.math.max
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +29,12 @@ class MainActivity : AppCompatActivity() {
         initLogList()
 
         findViewById<View>(R.id.btnSchedule).setOnClickListener {
-            scheduleDemoAlarm()
+            scheduleAlarm(
+                Date().time + 10000L,
+                DemoAlarmTask.TYPE,
+            ) {
+                dataPayload(DataPayload().apply { putString("reminder", "have a meeting") })
+            }
         }
 
         findViewById<View>(R.id.btnGetScheduledAlarmsInfo).setOnClickListener {
@@ -44,12 +50,6 @@ class MainActivity : AppCompatActivity() {
                 addLogItem(LogItem(msg, now.toString()))
             }
         })
-    }
-
-    private fun scheduleDemoAlarm() {
-        AlarmConfig(System.currentTimeMillis() + 10000L, DemoAlarmTask.TYPE) {
-            dataPayload(DataPayload().apply { putString("reminder", "have a meeting") })
-        }.schedule()
     }
 
     private fun initLogList() {
