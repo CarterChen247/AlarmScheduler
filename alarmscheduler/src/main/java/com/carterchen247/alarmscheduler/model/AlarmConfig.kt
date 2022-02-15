@@ -23,6 +23,11 @@ class AlarmConfig(
         this.dataPayload = dataPayload
     }
 
+    /**
+     * This function is deprecated. Please use [com.carterchen247.alarmscheduler.extension.scheduleAlarm] instead.
+     */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("this function is deprecated.")
     fun schedule(): Int {
         return AlarmScheduler.getImpl().schedule(getInfo())
     }
