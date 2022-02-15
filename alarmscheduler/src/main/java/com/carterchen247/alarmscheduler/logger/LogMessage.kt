@@ -1,6 +1,7 @@
 package com.carterchen247.alarmscheduler.logger
 
 import android.os.Bundle
+import com.carterchen247.alarmscheduler.extension.toMap
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 
 object LogMessage {
@@ -12,7 +13,7 @@ object LogMessage {
     fun onScheduleAlarm(alarmInfo: AlarmInfo) = "Start to schedule alarm. AlarmInfo=$alarmInfo"
     fun onScheduleAlarmSuccessfully() = "The alarm has been scheduled via AlarmManagerCompat"
     fun onAlarmTriggerReceiverOnReceive() = "The scheduled alarm goes off"
-    fun onAlarmTriggerReceiverOnReceive(alarmType: Int, alarmId: Int, bundle: Bundle?) = "Data payloads of the scheduled alarm: alarmType=$alarmType alarmId=$alarmId bundle=$bundle"
+    fun onAlarmTriggerReceiverOnReceive(alarmType: Int, alarmId: Int, bundle: Bundle?) = "Data payloads of the scheduled alarm: alarmType=$alarmType alarmId=$alarmId bundle data=${bundle.toMap()}"
     fun onCreateAlarmTask(alarmType: Int, alarmId: Int) = "Creating AlarmTask triggering callback. alarmType=$alarmType alarmId=$alarmId"
     fun onRebootCompleteReceiverOnReceive() = "RebootCompleteReceiver.onReceive() invoked"
     fun onRescheduleAlarmServiceOnHandleWork() = "RescheduleAlarmService.onHandleWork() invoked"

@@ -6,6 +6,7 @@ import android.content.Intent
 import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.ErrorHandler
+import com.carterchen247.alarmscheduler.extension.toMap
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
@@ -34,7 +35,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         Logger.d(LogMessage.onCreateAlarmTask(alarmType, alarmId))
         try {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
-            alarmTask.onAlarmFires(alarmId, DataPayload.create(bundle))
+            alarmTask.onAlarmFires(alarmId, DataPayload(bundle.toMap()))
         } catch (throwable: Throwable) {
             ErrorHandler.onError(IllegalStateException("Failed to create AlarmTask triggering callback", throwable))
         }

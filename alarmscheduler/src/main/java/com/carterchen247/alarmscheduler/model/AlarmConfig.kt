@@ -23,6 +23,10 @@ class AlarmConfig(
         this.dataPayload = dataPayload
     }
 
+    fun dataPayload(vararg pairs: Pair<String, Any>) {
+        dataPayload(DataPayload.of(*pairs))
+    }
+
     /**
      * This function is deprecated. Please use [com.carterchen247.alarmscheduler.extension.scheduleAlarm] instead.
      */

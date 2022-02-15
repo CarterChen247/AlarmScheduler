@@ -12,7 +12,6 @@ import com.carterchen247.alarmscheduler.demo.log.LogItemAdapter
 import com.carterchen247.alarmscheduler.demo.log.LogObservable
 import com.carterchen247.alarmscheduler.extension.scheduleAlarm
 import com.carterchen247.alarmscheduler.model.AlarmInfo
-import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import java.time.LocalDateTime
 import java.util.*
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 Date().time + 10000L,
                 DemoAlarmTask.TYPE,
             ) {
-                dataPayload(DataPayload().apply { putString("reminder", "have a meeting") })
+                dataPayload("reminder" to "have a meeting")
             }
         }
 
