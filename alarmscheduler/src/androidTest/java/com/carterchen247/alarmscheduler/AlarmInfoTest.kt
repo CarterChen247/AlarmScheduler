@@ -9,9 +9,7 @@ class AlarmInfoTest {
 
     @Test
     fun testEquality() {
-        val dataPayload = DataPayload().apply {
-            putString("key", "value")
-        }
+        val dataPayload = DataPayload.of("key" to "value")
         val alarmConfig = AlarmInfo(
             alarmType = 1,
             triggerTime = -1,

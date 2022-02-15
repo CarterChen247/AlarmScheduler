@@ -8,6 +8,7 @@ import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
 import com.carterchen247.alarmscheduler.error.ErrorHandler
+import com.carterchen247.alarmscheduler.extension.toBundle
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
@@ -147,7 +148,7 @@ internal class AlarmSchedulerImpl private constructor(
         return Intent(context, AlarmTriggerReceiver::class.java).apply {
             putExtra(Constant.ALARM_TYPE, alarmInfo.alarmType)
             putExtra(Constant.ALARM_ID, alarmInfo.alarmId)
-            putExtra(Constant.ALARM_CUSTOM_DATA, alarmInfo.dataPayload?.getBundle())
+            putExtra(Constant.ALARM_CUSTOM_DATA, alarmInfo.dataPayload?.dataMap.orEmpty().toBundle())
         }
     }
 
