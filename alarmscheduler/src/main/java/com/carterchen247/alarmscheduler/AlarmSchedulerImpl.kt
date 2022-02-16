@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
@@ -128,12 +129,7 @@ internal class AlarmSchedulerImpl private constructor(
     private fun scheduleAlarm(alarmInfo: AlarmInfo) {
         Logger.d(LogMessage.onScheduleAlarm(alarmInfo))
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            alarmInfo.alarmId,
-            buildIntent(alarmInfo),
-            PendingIntent.FLAG_UPDATE_CURRENT
-        ) ?: return
+        val pendingIntent = createPendingIntent(alarmInfo) ?: return
 
         AlarmManagerCompat.setAlarmClock(
             alarmManager as AlarmManager,
@@ -142,6 +138,21 @@ internal class AlarmSchedulerImpl private constructor(
             pendingIntent
         )
         Logger.d(LogMessage.onScheduleAlarmSuccessfully())
+    }
+
+    private fun createPendingIntent(alarmInfo: AlarmInfo): PendingIntent {
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+
+        return PendingIntent.getBroadcast(
+            context,
+            alarmInfo.alarmId,
+            buildIntent(alarmInfo),
+            flags
+        )
     }
 
     private fun buildIntent(alarmInfo: AlarmInfo): Intent {
