@@ -1,6 +1,7 @@
 package com.carterchen247.alarmscheduler
 
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
+import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
@@ -16,4 +17,6 @@ internal interface AlarmSchedulerContract {
     fun cancelAlarmTask(alarmId: Int)
     fun cancelAllAlarmTasks()
     fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback)
+    fun addEventObserver(observer: AlarmSchedulerEventObserver)
+    fun removeEventObserver(observer: AlarmSchedulerEventObserver)
 }

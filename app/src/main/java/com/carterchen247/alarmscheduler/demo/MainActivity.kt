@@ -10,6 +10,8 @@ import com.carterchen247.alarmscheduler.AlarmScheduler
 import com.carterchen247.alarmscheduler.demo.log.LogItem
 import com.carterchen247.alarmscheduler.demo.log.LogItemAdapter
 import com.carterchen247.alarmscheduler.demo.log.LogObservable
+import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
+import com.carterchen247.alarmscheduler.event.ScheduleExactAlarmPermissionGrantedEvent
 import com.carterchen247.alarmscheduler.extension.scheduleAlarm
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
@@ -21,11 +23,13 @@ class MainActivity : AppCompatActivity() {
 
     private val logItemAdapter = LogItemAdapter()
     private lateinit var logList: RecyclerView
+    private val alarmSchedulerEventObserver = createAlarmSchedulerEventObserver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initLogList()
+        AlarmScheduler.addEventObserver(alarmSchedulerEventObserver)
 
         findViewById<View>(R.id.btnSchedule).setOnClickListener {
             scheduleAlarm(
@@ -38,6 +42,18 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btnGetScheduledAlarmsInfo).setOnClickListener {
             requestScheduledAlarmsInfo()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AlarmScheduler.removeEventObserver(alarmSchedulerEventObserver)
+    }
+
+    private fun createAlarmSchedulerEventObserver() = AlarmSchedulerEventObserver { event ->
+        if (event is ScheduleExactAlarmPermissionGrantedEvent) {
+            val now = LocalDateTime.now()
+            addLogItem(LogItem("The permission to schedule exact alarms has been granted", now.toString()))
         }
     }
 

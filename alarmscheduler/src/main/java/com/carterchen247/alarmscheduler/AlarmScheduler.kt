@@ -2,6 +2,7 @@ package com.carterchen247.alarmscheduler
 
 import android.content.Context
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
+import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
@@ -49,6 +50,14 @@ object AlarmScheduler : AlarmSchedulerContract {
 
     override fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback) {
         getImpl().getScheduledAlarmsAsync(callback)
+    }
+
+    override fun addEventObserver(observer: AlarmSchedulerEventObserver) {
+        getImpl().addEventObserver(observer)
+    }
+
+    override fun removeEventObserver(observer: AlarmSchedulerEventObserver) {
+        getImpl().removeEventObserver(observer)
     }
 }
 

@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.d(LogMessage.onAlarmTriggerReceiverOnReceive())
+        Logger.d(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
 
         val alarmType = intent.getIntExtra(Constant.ALARM_TYPE, Constant.VALUE_NOT_ASSIGN)
         val alarmId = intent.getIntExtra(Constant.ALARM_ID, Constant.VALUE_NOT_ASSIGN)

@@ -8,7 +8,11 @@ import android.os.Build
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
+import com.carterchen247.alarmscheduler.error.CannotScheduleExactAlarmsException
 import com.carterchen247.alarmscheduler.error.ErrorHandler
+import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
+import com.carterchen247.alarmscheduler.event.EventDispatcher
+import com.carterchen247.alarmscheduler.extension.canScheduleExactAlarmsCompat
 import com.carterchen247.alarmscheduler.extension.toBundle
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.LogMessage
@@ -87,6 +91,14 @@ internal class AlarmSchedulerImpl private constructor(
         }
     }
 
+    override fun addEventObserver(observer: AlarmSchedulerEventObserver) {
+        EventDispatcher.addEventObserver(observer)
+    }
+
+    override fun removeEventObserver(observer: AlarmSchedulerEventObserver) {
+        EventDispatcher.removeObserver(observer)
+    }
+
     private fun getPendingIntentById(alarmId: Int): PendingIntent? {
         val intent = Intent(context, AlarmTriggerReceiver::class.java)
         return PendingIntent.getBroadcast(
@@ -127,16 +139,22 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     private fun scheduleAlarm(alarmInfo: AlarmInfo) {
-        Logger.d(LogMessage.onScheduleAlarm(alarmInfo))
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) ?: return
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+        if (!alarmManager.canScheduleExactAlarmsCompat()) {
+            ErrorHandler.onError(CannotScheduleExactAlarmsException())
+            return
+        }
         val pendingIntent = createPendingIntent(alarmInfo) ?: return
 
+        Logger.d(LogMessage.onScheduleAlarm(alarmInfo))
+
         AlarmManagerCompat.setAlarmClock(
-            alarmManager as AlarmManager,
+            alarmManager,
             alarmInfo.triggerTime,
             pendingIntent,
             pendingIntent
         )
+
         Logger.d(LogMessage.onScheduleAlarmSuccessfully())
     }
 
