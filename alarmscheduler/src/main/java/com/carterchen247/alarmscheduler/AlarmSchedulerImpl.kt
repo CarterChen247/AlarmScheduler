@@ -17,8 +17,7 @@ import com.carterchen247.alarmscheduler.extension.toBundle
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
-import com.carterchen247.alarmscheduler.model.AlarmInfo
-import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
+import com.carterchen247.alarmscheduler.model.*
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
@@ -99,6 +98,10 @@ internal class AlarmSchedulerImpl private constructor(
         EventDispatcher.removeObserver(observer)
     }
 
+    override fun schedule(config: AlarmConfig, callback: ScheduleResultCallback?) {
+        scheduleAlarm(config.getInfo(), callback)
+    }
+
     private fun getPendingIntentById(alarmId: Int): PendingIntent? {
         val intent = Intent(context, AlarmTriggerReceiver::class.java)
         return PendingIntent.getBroadcast(
@@ -118,47 +121,48 @@ internal class AlarmSchedulerImpl private constructor(
                 .also {
                     Logger.d(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
                 }
-                .forEach {
-                    schedule(it)
+                .forEach { alarmInfo ->
+                    scheduleAlarm(alarmInfo, null)
                 }
         }
     }
 
-    fun schedule(alarmInfo: AlarmInfo): Int {
-        val id = idProvider.generateId(alarmInfo.alarmId)
-        val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
-        Logger.d(LogMessage.onSchedule(calibratedAlarmInfo))
-
-        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            ErrorHandler.onError(IllegalStateException("failed to schedule an alarm", throwable))
-        }) {
-            alarmStateRepository.add(calibratedAlarmInfo)
-            scheduleAlarm(calibratedAlarmInfo)
-        }
-        return id
-    }
-
-    private fun scheduleAlarm(alarmInfo: AlarmInfo) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
-        if (!alarmManager.canScheduleExactAlarmsCompat()) {
-            ErrorHandler.onError(CannotScheduleExactAlarmsException())
+    private fun scheduleAlarm(alarmInfo: AlarmInfo, callback: ScheduleResultCallback?) {
+        Logger.d(LogMessage.onScheduleAlarm(alarmInfo))
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        if (alarmManager == null) {
+            callback?.onResult(ScheduleResult.Failure(IllegalStateException("AlarmManager should not be null")))
             return
         }
-        val pendingIntent = createPendingIntent(alarmInfo) ?: return
-
-        Logger.d(LogMessage.onScheduleAlarm(alarmInfo))
-
-        AlarmManagerCompat.setAlarmClock(
-            alarmManager,
-            alarmInfo.triggerTime,
-            pendingIntent,
-            pendingIntent
-        )
-
-        Logger.d(LogMessage.onScheduleAlarmSuccessfully())
+        if (!alarmManager.canScheduleExactAlarmsCompat()) {
+            callback?.onResult(ScheduleResult.Failure(CannotScheduleExactAlarmsException()))
+            return
+        }
+        val id = idProvider.generateId(alarmInfo.alarmId)
+        val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
+        val pendingIntent = createPendingIntent(calibratedAlarmInfo)
+        if (pendingIntent == null) {
+            callback?.onResult(ScheduleResult.Failure(IllegalStateException("PendingIntent should not be null")))
+            return
+        }
+        coroutineScope.launch {
+            try {
+                alarmStateRepository.add(calibratedAlarmInfo)
+                AlarmManagerCompat.setAlarmClock(
+                    alarmManager,
+                    calibratedAlarmInfo.triggerTime,
+                    pendingIntent,
+                    pendingIntent
+                )
+                callback?.onResult(ScheduleResult.Success(id))
+                Logger.d(LogMessage.onScheduleAlarmSuccessfully())
+            } catch (exception: Throwable) {
+                callback?.onResult(ScheduleResult.Failure(Exception("failed scheduling the alarm", exception)))
+            }
+        }
     }
 
-    private fun createPendingIntent(alarmInfo: AlarmInfo): PendingIntent {
+    private fun createPendingIntent(alarmInfo: AlarmInfo): PendingIntent? {
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         } else {

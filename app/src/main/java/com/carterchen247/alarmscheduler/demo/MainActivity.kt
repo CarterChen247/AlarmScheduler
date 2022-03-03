@@ -12,8 +12,9 @@ import com.carterchen247.alarmscheduler.demo.log.LogItemAdapter
 import com.carterchen247.alarmscheduler.demo.log.LogObservable
 import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.event.ScheduleExactAlarmPermissionGrantedEvent
-import com.carterchen247.alarmscheduler.extension.scheduleAlarm
+import com.carterchen247.alarmscheduler.model.AlarmConfig
 import com.carterchen247.alarmscheduler.model.AlarmInfo
+import com.carterchen247.alarmscheduler.model.ScheduleResult
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import java.time.LocalDateTime
 import java.util.*
@@ -32,11 +33,24 @@ class MainActivity : AppCompatActivity() {
         AlarmScheduler.addEventObserver(alarmSchedulerEventObserver)
 
         findViewById<View>(R.id.btnSchedule).setOnClickListener {
-            scheduleAlarm(
+            val config = AlarmConfig(
                 Date().time + 10000L,
-                DemoAlarmTask.TYPE,
+                DemoAlarmTask.TYPE
             ) {
                 dataPayload("reminder" to "have a meeting")
+            }
+            AlarmScheduler.schedule(config) { result ->
+                // result callback is optional
+                when (result) {
+                    is ScheduleResult.Success -> {
+                        val now = LocalDateTime.now()
+                        addLogItem(LogItem("The id of the scheduled alarm = ${result.alarmId}", now.toString()))
+                    }
+                    is ScheduleResult.Failure -> {
+                        val now = LocalDateTime.now()
+                        addLogItem(LogItem("Alarm scheduling is failed, exception = ${result.exception}", now.toString()))
+                    }
+                }
             }
         }
 
