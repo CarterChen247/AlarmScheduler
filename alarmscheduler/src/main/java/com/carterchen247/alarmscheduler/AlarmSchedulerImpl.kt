@@ -1,5 +1,6 @@
 package com.carterchen247.alarmscheduler
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -21,9 +22,6 @@ import com.carterchen247.alarmscheduler.model.*
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 internal class AlarmSchedulerImpl private constructor(
@@ -35,7 +33,6 @@ internal class AlarmSchedulerImpl private constructor(
     private var errorHandler = ErrorHandler
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
     private val idProvider by lazy { AlarmIdProvider(context) }
-    val coroutineScope by lazy { CoroutineScope(SupervisorJob()) }
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
         this.alarmTaskFactory = alarmTaskFactory
@@ -59,34 +56,40 @@ internal class AlarmSchedulerImpl private constructor(
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
             pendingIntent.cancel()
-            coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-                ErrorHandler.onError(IllegalStateException("cancelAlarmTask failed", throwable))
-            }) {
-                alarmStateRepository.removeImmediately(alarmId)
+            applicationScope.launch {
+                try {
+                    alarmStateRepository.removeImmediately(alarmId)
+                } catch (exception: Throwable) {
+                    ErrorHandler.onError(IllegalStateException("cancelAlarmTask failed", exception))
+                }
             }
         }
     }
 
     override fun cancelAllAlarmTasks() {
         Logger.d(LogMessage.onCancelAllAlarmTasks())
-        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            ErrorHandler.onError(IllegalStateException("cancelAllAlarmTasks failed", throwable))
-        }) {
-            alarmStateRepository.getAll()
-                .forEach {
-                    cancelAlarmTask(it.alarmId)
-                }
+        applicationScope.launch {
+            try {
+                alarmStateRepository.getAll()
+                    .forEach {
+                        cancelAlarmTask(it.alarmId)
+                    }
+            } catch (exception: Throwable) {
+                ErrorHandler.onError(IllegalStateException("cancelAllAlarmTasks failed", exception))
+            }
         }
     }
 
     override fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback) {
-        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            ErrorHandler.onError(IllegalStateException("getScheduledAlarmTaskCountAsync failed", throwable))
-        }) {
-            val scheduledAlarms = alarmStateRepository.getAll().filter {
-                isAlarmTaskScheduled(it.alarmId)
+        applicationScope.launch {
+            try {
+                val scheduledAlarms = alarmStateRepository.getAll().filter {
+                    isAlarmTaskScheduled(it.alarmId)
+                }
+                callback.onResult(scheduledAlarms)
+            } catch (exception: Throwable) {
+                ErrorHandler.onError(IllegalStateException("getScheduledAlarmTaskCountAsync failed", exception))
             }
-            callback.onResult(scheduledAlarms)
         }
     }
 
@@ -114,16 +117,19 @@ internal class AlarmSchedulerImpl private constructor(
 
     fun rescheduleAlarms() {
         Logger.d(LogMessage.onRescheduleAlarms())
-        coroutineScope.launch(CoroutineExceptionHandler { _, throwable ->
-            ErrorHandler.onError(IllegalStateException("rescheduleAlarms failed", throwable))
-        }) {
-            alarmStateRepository.getAll()
-                .also {
-                    Logger.d(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
-                }
-                .forEach { alarmInfo ->
-                    scheduleAlarm(alarmInfo, null)
-                }
+        applicationScope.launch {
+            try {
+                alarmStateRepository.getAll()
+                    .also {
+                        Logger.d(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
+                    }
+                    .forEach { alarmInfo ->
+                        scheduleAlarm(alarmInfo, null)
+                    }
+
+            } catch (exception: Throwable) {
+                ErrorHandler.onError(IllegalStateException("rescheduleAlarms failed", exception))
+            }
         }
     }
 
@@ -145,7 +151,7 @@ internal class AlarmSchedulerImpl private constructor(
             callback?.onResult(ScheduleResult.Failure(IllegalStateException("PendingIntent should not be null")))
             return
         }
-        coroutineScope.launch {
+        applicationScope.launch {
             try {
                 alarmStateRepository.add(calibratedAlarmInfo)
                 AlarmManagerCompat.setAlarmClock(
@@ -190,13 +196,19 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         @Volatile
-        private var instance: AlarmSchedulerImpl? = null
+        private lateinit var impl: AlarmSchedulerImpl
+        private var isInitialized = false
 
-        fun getInstance(context: Context): AlarmSchedulerImpl {
-            return instance ?: synchronized(AlarmSchedulerImpl::class.java) {
-                instance ?: AlarmSchedulerImpl(context).also { instance = it }
+        @Synchronized
+        fun initialize(context: Context) {
+            if (!isInitialized) {
+                impl = AlarmSchedulerImpl(context)
+                isInitialized = true
             }
         }
+
+        fun getInstance() = impl
     }
 }

@@ -3,7 +3,7 @@ package com.carterchen247.alarmscheduler.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.carterchen247.alarmscheduler.AlarmScheduler
+import com.carterchen247.alarmscheduler.AlarmSchedulerImpl
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 
@@ -20,7 +20,7 @@ internal class RescheduleAlarmService : JobIntentService() {
     override fun onHandleWork(intent: Intent) {
         Logger.d(LogMessage.onRescheduleAlarmServiceOnHandleWork())
         delayReschedule()
-        AlarmScheduler.getImpl().rescheduleAlarms()
+        AlarmSchedulerImpl.getInstance().rescheduleAlarms()
     }
 
     /**

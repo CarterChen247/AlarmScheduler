@@ -1,6 +1,6 @@
 package com.carterchen247.alarmscheduler
 
-import android.content.Context
+import android.annotation.SuppressLint
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
 import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
@@ -8,62 +8,50 @@ import com.carterchen247.alarmscheduler.model.AlarmConfig
 import com.carterchen247.alarmscheduler.model.ScheduleResultCallback
 import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
-import java.util.concurrent.CountDownLatch
 
 object AlarmScheduler : AlarmSchedulerContract {
 
-    private var impl: AlarmSchedulerImpl? = null
-    private val implInstanceLatch = CountDownLatch(1)
-
-    @Synchronized
-    fun init(context: Context) {
-        impl = AlarmSchedulerImpl.getInstance(context)
-        implInstanceLatch.countDown()
-    }
-
-    internal fun getImpl(): AlarmSchedulerImpl {
-        implInstanceLatch.await()
-        return requireNotNull(impl) { "AlarmSchedulerImpl is null, please call AlarmScheduler.init() first" }
-    }
+    @SuppressLint("StaticFieldLeak")
+    private val impl = AlarmSchedulerImpl.getInstance()
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
-        getImpl().setAlarmTaskFactory(alarmTaskFactory)
+        impl.setAlarmTaskFactory(alarmTaskFactory)
     }
 
     override fun setLogger(logger: AlarmSchedulerLogger?) {
-        getImpl().setLogger(logger)
+        impl.setLogger(logger)
     }
 
     override fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler) {
-        getImpl().setErrorHandler(errorHandler)
+        impl.setErrorHandler(errorHandler)
     }
 
     override fun isAlarmTaskScheduled(alarmId: Int): Boolean {
-        return getImpl().isAlarmTaskScheduled(alarmId)
+        return impl.isAlarmTaskScheduled(alarmId)
     }
 
     override fun cancelAlarmTask(alarmId: Int) {
-        getImpl().cancelAlarmTask(alarmId)
+        impl.cancelAlarmTask(alarmId)
     }
 
     override fun cancelAllAlarmTasks() {
-        getImpl().cancelAllAlarmTasks()
+        impl.cancelAllAlarmTasks()
     }
 
     override fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback) {
-        getImpl().getScheduledAlarmsAsync(callback)
+        impl.getScheduledAlarmsAsync(callback)
     }
 
     override fun addEventObserver(observer: AlarmSchedulerEventObserver) {
-        getImpl().addEventObserver(observer)
+        impl.addEventObserver(observer)
     }
 
     override fun removeEventObserver(observer: AlarmSchedulerEventObserver) {
-        getImpl().removeEventObserver(observer)
+        impl.removeEventObserver(observer)
     }
 
     override fun schedule(config: AlarmConfig, callback: ScheduleResultCallback?) {
-        getImpl().schedule(config, callback)
+        impl.schedule(config, callback)
     }
 }
 

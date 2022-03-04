@@ -14,8 +14,6 @@ class App : Application() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
 
-        // init AlarmScheduler
-        AlarmScheduler.init(this)
         AlarmScheduler.setAlarmTaskFactory(object : AlarmTaskFactory {
             override fun createAlarmTask(alarmType: Int): AlarmTask {
                 return DemoAlarmTask()
