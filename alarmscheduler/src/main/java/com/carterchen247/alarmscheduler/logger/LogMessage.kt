@@ -12,9 +12,9 @@ object LogMessage {
     fun onSchedule(alarmInfo: AlarmInfo) = "Received alarm scheduling command. AlarmInfo=$alarmInfo"
     fun onScheduleAlarm(alarmInfo: AlarmInfo) = "Start to schedule alarm. AlarmInfo=$alarmInfo"
     fun onScheduleAlarmSuccessfully() = "The alarm has been scheduled via AlarmManagerCompat"
-    fun onAlarmTriggerReceiverOnReceive() = "The scheduled alarm goes off"
-    fun onAlarmTriggerReceiverOnReceive(alarmType: Int, alarmId: Int, bundle: Bundle?) = "Data payloads of the scheduled alarm: alarmType=$alarmType alarmId=$alarmId bundle data=${bundle.toMap()}"
+    fun onAlarmTriggerReceiverOnReceive(alarmType: Int, alarmId: Int, bundle: Bundle?) = "The scheduled alarm goes off. Data payloads of the scheduled alarm: alarmType=$alarmType alarmId=$alarmId bundle data=${bundle.toMap()}"
     fun onCreateAlarmTask(alarmType: Int, alarmId: Int) = "Creating AlarmTask triggering callback. alarmType=$alarmType alarmId=$alarmId"
     fun onRebootCompleteReceiverOnReceive() = "RebootCompleteReceiver.onReceive() invoked"
     fun onRescheduleAlarmServiceOnHandleWork() = "RescheduleAlarmService.onHandleWork() invoked"
+    fun onBroadcastReceiverOnReceiveInvoked(receiver: Any) = "onReceive() of ${receiver::class.java.simpleName} invoked"
 }
