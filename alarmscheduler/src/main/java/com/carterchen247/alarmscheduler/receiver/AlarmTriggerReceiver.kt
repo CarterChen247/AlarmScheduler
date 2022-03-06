@@ -16,12 +16,12 @@ import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.d(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
+        Logger.info(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
 
         val alarmType = intent.getIntExtra(Constant.ALARM_TYPE, Constant.VALUE_NOT_ASSIGN)
         val alarmId = intent.getIntExtra(Constant.ALARM_ID, Constant.VALUE_NOT_ASSIGN)
         val bundle = intent.getBundleExtra(Constant.ALARM_CUSTOM_DATA)
-        Logger.d(LogMessage.onAlarmTriggerReceiverOnReceive(alarmType, alarmId, bundle))
+        Logger.info(LogMessage.onAlarmTriggerReceiverOnReceive(alarmType, alarmId, bundle))
 
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
             return
@@ -32,7 +32,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
             return
         }
 
-        Logger.d(LogMessage.onCreateAlarmTask(alarmType, alarmId))
+        Logger.info(LogMessage.onCreateAlarmTask(alarmType, alarmId))
         try {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
             alarmTask.onAlarmFires(alarmId, DataPayload(bundle.toMap()))

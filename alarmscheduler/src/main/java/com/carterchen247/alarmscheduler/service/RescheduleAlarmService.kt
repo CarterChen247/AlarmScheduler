@@ -18,7 +18,7 @@ internal class RescheduleAlarmService : JobIntentService() {
     }
 
     override fun onHandleWork(intent: Intent) {
-        Logger.d(LogMessage.onRescheduleAlarmServiceOnHandleWork())
+        Logger.info(LogMessage.onRescheduleAlarmServiceOnHandleWork())
         delayReschedule()
         AlarmSchedulerImpl.getInstance().rescheduleAlarms()
     }

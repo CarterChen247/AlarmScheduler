@@ -1,8 +1,10 @@
 package com.carterchen247.alarmscheduler.logger
 
-/**
- * implement this interface to monitor the behavior of the library
- */
 interface AlarmSchedulerLogger {
-    fun log(priority: Int, msg: String)
+    fun info(msg: String)
+    fun error(msg: String, throwable: Throwable)
+
+    companion object {
+        val DEBUG = AlarmSchedulerDebugLogger()
+    }
 }

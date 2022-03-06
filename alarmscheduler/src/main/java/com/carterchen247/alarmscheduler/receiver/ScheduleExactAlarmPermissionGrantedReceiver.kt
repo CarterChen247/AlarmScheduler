@@ -12,7 +12,7 @@ import com.carterchen247.alarmscheduler.service.RescheduleAlarmService
 
 internal class ScheduleExactAlarmPermissionGrantedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.d(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
+        Logger.info(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
         if (intent.action == AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED) {
             RescheduleAlarmService.startService(context)
             EventDispatcher.dispatchEvent(ScheduleExactAlarmPermissionGrantedEvent)

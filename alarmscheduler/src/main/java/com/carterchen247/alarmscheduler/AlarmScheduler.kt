@@ -18,8 +18,8 @@ object AlarmScheduler : AlarmSchedulerContract {
         impl.setAlarmTaskFactory(alarmTaskFactory)
     }
 
-    override fun setLogger(logger: AlarmSchedulerLogger?) {
-        impl.setLogger(logger)
+    override fun setLogger(loggerImpl: AlarmSchedulerLogger) {
+        impl.setLogger(loggerImpl)
     }
 
     override fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler) {
