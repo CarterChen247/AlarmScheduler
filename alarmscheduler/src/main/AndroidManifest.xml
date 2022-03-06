@@ -31,6 +31,10 @@
                 <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+        <provider
+            android:name=".AlarmSchedulerInitProvider"
+            android:authorities="${applicationId}.AlarmSchedulerInitProvider"
+            android:exported="false"
+            android:initOrder="100" />
     </application>
-
 </manifest>
