@@ -29,7 +29,6 @@ internal class AlarmSchedulerImpl private constructor(
 ) : AlarmSchedulerContract {
 
     private var alarmTaskFactory: AlarmTaskFactory? = null
-    private var logger = Logger
     private var errorHandler = ErrorHandler
     private val alarmStateRepository = AlarmStateRepository.getInstance(context)
     private val idProvider by lazy { AlarmIdProvider(context) }
@@ -38,8 +37,8 @@ internal class AlarmSchedulerImpl private constructor(
         this.alarmTaskFactory = alarmTaskFactory
     }
 
-    override fun setLogger(logger: AlarmSchedulerLogger?) {
-        this.logger.logger = logger
+    override fun setLogger(loggerImpl: AlarmSchedulerLogger) {
+        Logger.setDelegate(loggerImpl)
     }
 
     override fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler) {
@@ -51,7 +50,7 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     override fun cancelAlarmTask(alarmId: Int) {
-        Logger.d(LogMessage.onCancelAlarmTask())
+        Logger.info(LogMessage.onCancelAlarmTask())
         getPendingIntentById(alarmId)?.let { pendingIntent ->
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
@@ -67,7 +66,7 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     override fun cancelAllAlarmTasks() {
-        Logger.d(LogMessage.onCancelAllAlarmTasks())
+        Logger.info(LogMessage.onCancelAllAlarmTasks())
         applicationScope.launch {
             try {
                 alarmStateRepository.getAll()
@@ -116,12 +115,12 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     fun rescheduleAlarms() {
-        Logger.d(LogMessage.onRescheduleAlarms())
+        Logger.info(LogMessage.onRescheduleAlarms())
         applicationScope.launch {
             try {
                 alarmStateRepository.getAll()
                     .also {
-                        Logger.d(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
+                        Logger.info(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
                     }
                     .forEach { alarmInfo ->
                         scheduleAlarm(alarmInfo, null)
@@ -134,7 +133,7 @@ internal class AlarmSchedulerImpl private constructor(
     }
 
     private fun scheduleAlarm(alarmInfo: AlarmInfo, callback: ScheduleResultCallback?) {
-        Logger.d(LogMessage.onScheduleAlarm(alarmInfo))
+        Logger.info(LogMessage.onScheduleAlarm(alarmInfo))
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         if (alarmManager == null) {
             callback?.onResult(ScheduleResult.Failure(IllegalStateException("AlarmManager should not be null")))
@@ -161,7 +160,7 @@ internal class AlarmSchedulerImpl private constructor(
                     pendingIntent
                 )
                 callback?.onResult(ScheduleResult.Success(id))
-                Logger.d(LogMessage.onScheduleAlarmSuccessfully())
+                Logger.info(LogMessage.onScheduleAlarmSuccessfully())
             } catch (exception: Throwable) {
                 callback?.onResult(ScheduleResult.Failure(Exception("failed scheduling the alarm", exception)))
             }

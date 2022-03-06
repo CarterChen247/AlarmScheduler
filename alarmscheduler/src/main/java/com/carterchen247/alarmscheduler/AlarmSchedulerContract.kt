@@ -13,7 +13,7 @@ import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
  */
 internal interface AlarmSchedulerContract {
     fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory)
-    fun setLogger(logger: AlarmSchedulerLogger?)
+    fun setLogger(loggerImpl: AlarmSchedulerLogger)
     fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler)
     fun isAlarmTaskScheduled(alarmId: Int): Boolean
     fun cancelAlarmTask(alarmId: Int)
