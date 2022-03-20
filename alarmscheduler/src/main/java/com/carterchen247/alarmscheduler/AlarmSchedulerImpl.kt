@@ -9,8 +9,8 @@ import android.os.Build
 import androidx.core.app.AlarmManagerCompat
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
-import com.carterchen247.alarmscheduler.error.CannotScheduleExactAlarmsException
 import com.carterchen247.alarmscheduler.error.ErrorHandler
+import com.carterchen247.alarmscheduler.error.ExceptionFactory
 import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.event.EventDispatcher
 import com.carterchen247.alarmscheduler.extension.canScheduleExactAlarmsCompat
@@ -59,7 +59,7 @@ internal class AlarmSchedulerImpl private constructor(
                 try {
                     alarmStateRepository.removeImmediately(alarmId)
                 } catch (exception: Throwable) {
-                    ErrorHandler.onError(IllegalStateException("cancelAlarmTask failed", exception))
+                    ErrorHandler.onError(ExceptionFactory.failedToCancelAlarmTask(exception))
                 }
             }
         }
@@ -74,7 +74,7 @@ internal class AlarmSchedulerImpl private constructor(
                         cancelAlarmTask(it.alarmId)
                     }
             } catch (exception: Throwable) {
-                ErrorHandler.onError(IllegalStateException("cancelAllAlarmTasks failed", exception))
+                ErrorHandler.onError(ExceptionFactory.failedToCancelAllAlarmTasks(exception))
             }
         }
     }
@@ -87,7 +87,7 @@ internal class AlarmSchedulerImpl private constructor(
                 }
                 callback.onResult(scheduledAlarms)
             } catch (exception: Throwable) {
-                ErrorHandler.onError(IllegalStateException("getScheduledAlarmTaskCountAsync failed", exception))
+                ErrorHandler.onError(ExceptionFactory.failedToGetScheduledAlarmTaskCountAsync(exception))
             }
         }
     }
@@ -127,7 +127,7 @@ internal class AlarmSchedulerImpl private constructor(
                     }
 
             } catch (exception: Throwable) {
-                ErrorHandler.onError(IllegalStateException("rescheduleAlarms failed", exception))
+                ErrorHandler.onError(ExceptionFactory.failedToRescheduleAlarms(exception))
             }
         }
     }
@@ -136,18 +136,18 @@ internal class AlarmSchedulerImpl private constructor(
         Logger.info(LogMessage.onScheduleAlarm(alarmInfo))
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         if (alarmManager == null) {
-            callback?.onResult(ScheduleResult.Failure(IllegalStateException("AlarmManager should not be null")))
+            callback?.onResult(ScheduleResult.Failure(ExceptionFactory.nullAlarmManager()))
             return
         }
         if (!alarmManager.canScheduleExactAlarmsCompat()) {
-            callback?.onResult(ScheduleResult.Failure(CannotScheduleExactAlarmsException()))
+            callback?.onResult(ScheduleResult.Failure(ExceptionFactory.cannotScheduleExactAlarms()))
             return
         }
         val id = idProvider.generateId(alarmInfo.alarmId)
         val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
         val pendingIntent = createPendingIntent(calibratedAlarmInfo)
         if (pendingIntent == null) {
-            callback?.onResult(ScheduleResult.Failure(IllegalStateException("PendingIntent should not be null")))
+            callback?.onResult(ScheduleResult.Failure(ExceptionFactory.nullPendingIntent()))
             return
         }
         applicationScope.launch {
@@ -162,7 +162,7 @@ internal class AlarmSchedulerImpl private constructor(
                 callback?.onResult(ScheduleResult.Success(id))
                 Logger.info(LogMessage.onScheduleAlarmSuccessfully())
             } catch (exception: Throwable) {
-                callback?.onResult(ScheduleResult.Failure(Exception("failed scheduling the alarm", exception)))
+                callback?.onResult(ScheduleResult.Failure(ExceptionFactory.failedToScheduleAlarm(exception)))
             }
         }
     }
@@ -173,7 +173,6 @@ internal class AlarmSchedulerImpl private constructor(
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
-
         return PendingIntent.getBroadcast(
             context,
             alarmInfo.alarmId,

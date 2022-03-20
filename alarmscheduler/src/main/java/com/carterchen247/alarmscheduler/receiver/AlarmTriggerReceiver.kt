@@ -7,6 +7,7 @@ import com.carterchen247.alarmscheduler.AlarmSchedulerImpl
 import com.carterchen247.alarmscheduler.applicationScope
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.ErrorHandler
+import com.carterchen247.alarmscheduler.error.ExceptionFactory
 import com.carterchen247.alarmscheduler.extension.toMap
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
@@ -28,7 +29,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         val alarmTaskFactory = AlarmSchedulerImpl.getInstance().getAlarmTaskFactory()
         if (alarmTaskFactory == null) {
-            ErrorHandler.onError(IllegalStateException("Failed creating AlarmTask, alarmTaskFactory is null"))
+            ErrorHandler.onError(ExceptionFactory.nullAlarmTaskFactory())
             return
         }
 
@@ -37,13 +38,13 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
             alarmTask.onAlarmFires(alarmId, DataPayload(bundle.toMap()))
         } catch (throwable: Throwable) {
-            ErrorHandler.onError(IllegalStateException("Failed to create AlarmTask triggering callback", throwable))
+            ErrorHandler.onError(ExceptionFactory.failedToCreateAlarmTask(throwable))
         }
         applicationScope.launch {
             try {
                 AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
             } catch (exception: Throwable) {
-                ErrorHandler.onError(IllegalStateException("Failed to removed triggered alarm id", exception))
+                ErrorHandler.onError(ExceptionFactory.failedToRemoveAlarmState(exception))
             }
         }
     }
