@@ -19,7 +19,6 @@ import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.*
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
-import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import kotlinx.coroutines.launch
 
@@ -29,7 +28,7 @@ internal class AlarmSchedulerImpl(
 
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var errorHandler = ErrorHandler
-    private val alarmStateRepository = AlarmStateRepository.getInstance(context)
+    private val alarmStateRepository = ServiceLocator.provideAlarmStateRepository()
     private val idProvider by lazy { AlarmIdProvider(context) }
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {

@@ -16,19 +16,11 @@ internal abstract class AlarmSchedulerDatabase : RoomDatabase() {
     companion object {
         private const val DB_NAME = "AlarmScheduler"
 
-        @Volatile
-        private var INSTANCE: AlarmSchedulerDatabase? = null
-
-        fun getInstance(context: Context): AlarmSchedulerDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: buildDatabase(context).also { INSTANCE = it }
-            }
-
-        private fun buildDatabase(context: Context) =
+        fun buildDatabase(context: Context) =
             Room.databaseBuilder(
-                context.applicationContext,
-                AlarmSchedulerDatabase::class.java, DB_NAME
+                context,
+                AlarmSchedulerDatabase::class.java,
+                DB_NAME,
             ).build()
     }
 }

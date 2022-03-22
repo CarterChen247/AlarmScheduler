@@ -12,12 +12,12 @@ import com.carterchen247.alarmscheduler.extension.toMap
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.DataPayload
-import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
 
     private val alarmSchedulerImpl = ServiceLocator.provideAlarmSchedulerImpl()
+    private val alarmStateRepository = ServiceLocator.provideAlarmStateRepository()
 
     override fun onReceive(context: Context, intent: Intent) {
         Logger.info(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
@@ -45,7 +45,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         applicationScope.launch {
             try {
-                AlarmStateRepository.getInstance(context).removeImmediately(alarmId)
+                alarmStateRepository.removeImmediately(alarmId)
             } catch (exception: Throwable) {
                 ErrorHandler.onError(ExceptionFactory.failedToRemoveAlarmState(exception))
             }
