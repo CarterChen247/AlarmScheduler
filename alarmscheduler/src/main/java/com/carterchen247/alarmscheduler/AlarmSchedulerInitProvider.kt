@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 
 /**
- * The [ContentProvider] responsible for initializing [AlarmSchedulerImpl]
+ * The [ContentProvider] responsible for initializing alarm scheduler library
  */
 class AlarmSchedulerInitProvider : ContentProvider() {
     override fun onCreate(): Boolean {
