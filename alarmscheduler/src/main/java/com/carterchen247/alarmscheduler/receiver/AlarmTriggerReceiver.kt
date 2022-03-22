@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
 
     private val alarmSchedulerImpl = ServiceLocator.provideAlarmSchedulerImpl()
-    private val alarmStateRepository = ServiceLocator.provideAlarmStateRepository()
+    private val alarmStateDataSource = ServiceLocator.provideAlarmStateDataSource()
 
     override fun onReceive(context: Context, intent: Intent) {
         Logger.info(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
@@ -45,7 +45,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         applicationScope.launch {
             try {
-                alarmStateRepository.removeImmediately(alarmId)
+                alarmStateDataSource.removeImmediately(alarmId)
             } catch (exception: Throwable) {
                 ErrorHandler.onError(ExceptionFactory.failedToRemoveAlarmState(exception))
             }

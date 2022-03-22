@@ -4,13 +4,13 @@ import com.carterchen247.alarmscheduler.model.AlarmInfo
 
 internal class AlarmStateRepository(
     private val alarmStateDao: AlarmStateDao
-) {
+) : AlarmStateDataSource {
 
-    suspend fun add(alarmInfo: AlarmInfo): Long {
+    override suspend fun add(alarmInfo: AlarmInfo): Long {
         return alarmStateDao.insertEntity(AlarmStateEntity.create(alarmInfo))
     }
 
-    suspend fun getAll(): List<AlarmInfo> {
+    override suspend fun getAll(): List<AlarmInfo> {
         return alarmStateDao.selectAll()
             .map {
                 AlarmInfo(
@@ -22,7 +22,7 @@ internal class AlarmStateRepository(
             }
     }
 
-    suspend fun removeImmediately(id: Int) {
+    override suspend fun removeImmediately(id: Int) {
         alarmStateDao.removeEntity(AlarmStateEntity(id = id))
     }
 }

@@ -19,16 +19,17 @@ import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 import com.carterchen247.alarmscheduler.model.*
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
+import com.carterchen247.alarmscheduler.storage.AlarmStateDataSource
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import kotlinx.coroutines.launch
 
 internal class AlarmSchedulerImpl(
-    private val context: Context
+    private val context: Context,
+    private val alarmStateDataSource: AlarmStateDataSource
 ) : AlarmSchedulerContract {
 
     private var alarmTaskFactory: AlarmTaskFactory? = null
     private var errorHandler = ErrorHandler
-    private val alarmStateRepository = ServiceLocator.provideAlarmStateRepository()
     private val idProvider by lazy { AlarmIdProvider(context) }
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
@@ -55,7 +56,7 @@ internal class AlarmSchedulerImpl(
             pendingIntent.cancel()
             applicationScope.launch {
                 try {
-                    alarmStateRepository.removeImmediately(alarmId)
+                    alarmStateDataSource.removeImmediately(alarmId)
                 } catch (exception: Throwable) {
                     ErrorHandler.onError(ExceptionFactory.failedToCancelAlarmTask(exception))
                 }
@@ -67,7 +68,7 @@ internal class AlarmSchedulerImpl(
         Logger.info(LogMessage.onCancelAllAlarmTasks())
         applicationScope.launch {
             try {
-                alarmStateRepository.getAll()
+                alarmStateDataSource.getAll()
                     .forEach {
                         cancelAlarmTask(it.alarmId)
                     }
@@ -80,7 +81,7 @@ internal class AlarmSchedulerImpl(
     override fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback) {
         applicationScope.launch {
             try {
-                val scheduledAlarms = alarmStateRepository.getAll().filter {
+                val scheduledAlarms = alarmStateDataSource.getAll().filter {
                     isAlarmTaskScheduled(it.alarmId)
                 }
                 callback.onResult(scheduledAlarms)
@@ -116,7 +117,7 @@ internal class AlarmSchedulerImpl(
         Logger.info(LogMessage.onRescheduleAlarms())
         applicationScope.launch {
             try {
-                alarmStateRepository.getAll()
+                alarmStateDataSource.getAll()
                     .also {
                         Logger.info(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
                     }
@@ -150,7 +151,7 @@ internal class AlarmSchedulerImpl(
         }
         applicationScope.launch {
             try {
-                alarmStateRepository.add(calibratedAlarmInfo)
+                alarmStateDataSource.add(calibratedAlarmInfo)
                 AlarmManagerCompat.setAlarmClock(
                     alarmManager,
                     calibratedAlarmInfo.triggerTime,
