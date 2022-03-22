@@ -3,7 +3,7 @@ package com.carterchen247.alarmscheduler.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.carterchen247.alarmscheduler.AlarmSchedulerImpl
+import com.carterchen247.alarmscheduler.ServiceLocator
 import com.carterchen247.alarmscheduler.applicationScope
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.ErrorHandler
@@ -16,6 +16,9 @@ import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import kotlinx.coroutines.launch
 
 internal class AlarmTriggerReceiver : BroadcastReceiver() {
+
+    private val alarmSchedulerImpl = ServiceLocator.provideAlarmSchedulerImpl()
+
     override fun onReceive(context: Context, intent: Intent) {
         Logger.info(LogMessage.onBroadcastReceiverOnReceiveInvoked(this))
 
@@ -27,7 +30,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         if (alarmType == Constant.VALUE_NOT_ASSIGN || alarmId == Constant.VALUE_NOT_ASSIGN) {
             return
         }
-        val alarmTaskFactory = AlarmSchedulerImpl.getInstance().getAlarmTaskFactory()
+        val alarmTaskFactory = alarmSchedulerImpl.getAlarmTaskFactory()
         if (alarmTaskFactory == null) {
             ErrorHandler.onError(ExceptionFactory.nullAlarmTaskFactory())
             return

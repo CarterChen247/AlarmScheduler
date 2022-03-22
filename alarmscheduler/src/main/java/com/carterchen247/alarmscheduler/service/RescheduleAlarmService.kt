@@ -3,24 +3,18 @@ package com.carterchen247.alarmscheduler.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.carterchen247.alarmscheduler.AlarmSchedulerImpl
+import com.carterchen247.alarmscheduler.ServiceLocator
 import com.carterchen247.alarmscheduler.logger.LogMessage
 import com.carterchen247.alarmscheduler.logger.Logger
 
 internal class RescheduleAlarmService : JobIntentService() {
 
-    companion object {
-        private const val JOB_ID = 9453
-
-        fun startService(context: Context) {
-            enqueueWork(context, RescheduleAlarmService::class.java, JOB_ID, Intent())
-        }
-    }
+    private val alarmSchedulerImpl = ServiceLocator.provideAlarmSchedulerImpl()
 
     override fun onHandleWork(intent: Intent) {
         Logger.info(LogMessage.onRescheduleAlarmServiceOnHandleWork())
         delayReschedule()
-        AlarmSchedulerImpl.getInstance().rescheduleAlarms()
+        alarmSchedulerImpl.rescheduleAlarms()
     }
 
     /**
@@ -30,5 +24,12 @@ internal class RescheduleAlarmService : JobIntentService() {
      */
     private fun delayReschedule() {
         Thread.sleep(3000L)
+    }
+
+    companion object {
+        private const val JOB_ID = 9453
+        fun startService(context: Context) {
+            enqueueWork(context, RescheduleAlarmService::class.java, JOB_ID, Intent())
+        }
     }
 }

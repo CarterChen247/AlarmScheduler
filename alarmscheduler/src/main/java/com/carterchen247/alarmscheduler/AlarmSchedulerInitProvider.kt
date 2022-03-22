@@ -10,7 +10,7 @@ import android.net.Uri
  */
 class AlarmSchedulerInitProvider : ContentProvider() {
     override fun onCreate(): Boolean {
-        AlarmSchedulerImpl.initialize(context!!)
+        ApplicationContextHolder.setInstance(context!!)
         return true
     }
 

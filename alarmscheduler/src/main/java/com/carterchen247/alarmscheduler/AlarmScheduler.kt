@@ -12,7 +12,7 @@ import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 object AlarmScheduler : AlarmSchedulerContract {
 
     @SuppressLint("StaticFieldLeak")
-    private val impl = AlarmSchedulerImpl.getInstance()
+    private val impl = ServiceLocator.provideAlarmSchedulerImpl()
 
     override fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory) {
         impl.setAlarmTaskFactory(alarmTaskFactory)

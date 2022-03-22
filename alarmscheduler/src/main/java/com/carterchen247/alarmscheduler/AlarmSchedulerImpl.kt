@@ -1,6 +1,5 @@
 package com.carterchen247.alarmscheduler
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -24,7 +23,7 @@ import com.carterchen247.alarmscheduler.storage.AlarmStateRepository
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import kotlinx.coroutines.launch
 
-internal class AlarmSchedulerImpl private constructor(
+internal class AlarmSchedulerImpl(
     private val context: Context
 ) : AlarmSchedulerContract {
 
@@ -191,22 +190,5 @@ internal class AlarmSchedulerImpl private constructor(
 
     fun getAlarmTaskFactory(): AlarmTaskFactory? {
         return alarmTaskFactory
-    }
-
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        @Volatile
-        private lateinit var impl: AlarmSchedulerImpl
-        private var isInitialized = false
-
-        @Synchronized
-        fun initialize(context: Context) {
-            if (!isInitialized) {
-                impl = AlarmSchedulerImpl(context)
-                isInitialized = true
-            }
-        }
-
-        fun getInstance() = impl
     }
 }
