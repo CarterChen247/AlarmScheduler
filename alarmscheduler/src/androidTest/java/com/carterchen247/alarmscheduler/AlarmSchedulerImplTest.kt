@@ -1,5 +1,6 @@
 package com.carterchen247.alarmscheduler
 
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.carterchen247.alarmscheduler.model.AlarmConfig
@@ -20,13 +21,9 @@ class AlarmSchedulerImplTest {
 
     private lateinit var alarmSchedulerImpl: AlarmSchedulerImpl
 
-    @MockK
-    private lateinit var callback: ScheduleResultCallback
-
     @Before
     fun setUp() {
-        MockKAnnotations.init(this, relaxed = true)
-
+        print("xxx setUp")
         val dataSource = createAlarmStateDataSource()
         alarmSchedulerImpl = AlarmSchedulerImpl(
             ApplicationProvider.getApplicationContext(),
@@ -35,12 +32,15 @@ class AlarmSchedulerImplTest {
     }
 
     @Test
-    fun name() {
+    fun xxxx() {
+        println("xxx xxxx")
+        Log.d("xxx","xxxxxx d")
         val config = AlarmConfig(0, 0)
-//        val slot = CapturingSlot<ScheduleResult>()
-//        every { callback.onResult(capture(slot)) } just Runs
-//
-        alarmSchedulerImpl.schedule(config) { }
+        val slot = slot<ScheduleResult>()
+        val callback = mockk<ScheduleResultCallback>()
+        every { callback.onResult(capture(slot)) } just Runs
+
+        alarmSchedulerImpl.schedule(config, callback)
 //        val scheduleResult = slot.captured
 //        assertTrue(scheduleResult is ScheduleResult.Success)
 //        assertTrue(true)
