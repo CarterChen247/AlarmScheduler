@@ -9,8 +9,6 @@ import com.carterchen247.alarmscheduler.model.ScheduleResult
 import com.carterchen247.alarmscheduler.model.ScheduleResultCallback
 import com.carterchen247.alarmscheduler.storage.AlarmStateDataSource
 import io.mockk.*
-import io.mockk.impl.annotations.MockK
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -34,7 +32,7 @@ class AlarmSchedulerImplTest {
     @Test
     fun xxxx() {
         println("xxx xxxx")
-        Log.d("xxx","xxxxxx d")
+        Log.d("xxx", "xxxxxx d")
         val config = AlarmConfig(0, 0)
         val slot = slot<ScheduleResult>()
         val callback = mockk<ScheduleResultCallback>()
