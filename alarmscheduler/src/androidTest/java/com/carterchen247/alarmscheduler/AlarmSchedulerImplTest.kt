@@ -41,9 +41,9 @@ class AlarmSchedulerImplTest {
         every { callback.onResult(capture(slot)) } just Runs
 
         alarmSchedulerImpl.schedule(config, callback)
-//        val scheduleResult = slot.captured
-//        assertTrue(scheduleResult is ScheduleResult.Success)
-//        assertTrue(true)
+        val scheduleResult = slot.captured
+        assertTrue(scheduleResult is ScheduleResult.Success)
+        assertTrue(true)
     }
 
     private fun createAlarmStateDataSource() = object : AlarmStateDataSource {
