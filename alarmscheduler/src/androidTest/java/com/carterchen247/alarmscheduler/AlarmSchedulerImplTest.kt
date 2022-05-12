@@ -10,6 +10,9 @@ import com.carterchen247.alarmscheduler.model.ScheduleResultCallback
 import com.carterchen247.alarmscheduler.storage.AlarmStateDataSource
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
@@ -44,7 +47,7 @@ class AlarmSchedulerImplTest {
     }
 
     @Test
-    fun xxxx() = testDispatcher.runBlockingTest {
+    fun xxxx() = runBlockingTest() {
         println("xxx xxxx")
         Log.d("xxx", "xxxxxx d")
         val config = AlarmConfig(0, 0)
@@ -56,6 +59,20 @@ class AlarmSchedulerImplTest {
         val scheduleResult = slot.captured
         assertTrue(scheduleResult is ScheduleResult.Success)
         assertTrue(true)
+    }
+
+    @Test
+    fun xxx() {
+        val dataSource = object : AlarmStateDataSource {
+            override suspend fun add(alarmInfo: AlarmInfo): Long = 0
+
+            override suspend fun getAll(): List<AlarmInfo> = emptyList()
+
+            override suspend fun removeImmediately(id: Int) = Unit
+        }
+        GlobalScope.launch {
+            dataSource.getAll()
+        }
     }
 
     private fun createAlarmStateDataSource() = object : AlarmStateDataSource {

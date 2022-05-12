@@ -21,7 +21,9 @@ import com.carterchen247.alarmscheduler.model.*
 import com.carterchen247.alarmscheduler.receiver.AlarmTriggerReceiver
 import com.carterchen247.alarmscheduler.storage.AlarmStateDataSource
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class AlarmSchedulerImpl(
     private val context: Context,
@@ -149,6 +151,7 @@ internal class AlarmSchedulerImpl(
             callback?.onResult(ScheduleResult.Failure(ExceptionFactory.nullPendingIntent()))
             return
         }
+
         applicationScope.launch {
             try {
                 alarmStateDataSource.add(calibratedAlarmInfo)
