@@ -152,7 +152,7 @@ internal class AlarmSchedulerImpl(
             return
         }
 
-        applicationScope.launch {
+        applicationScope.launch(Dispatchers.Main) {
             try {
                 alarmStateDataSource.add(calibratedAlarmInfo)
                 AlarmManagerCompat.setAlarmClock(

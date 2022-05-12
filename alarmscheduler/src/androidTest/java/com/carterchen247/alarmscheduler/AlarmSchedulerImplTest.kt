@@ -9,25 +9,23 @@ import com.carterchen247.alarmscheduler.model.ScheduleResult
 import com.carterchen247.alarmscheduler.model.ScheduleResultCallback
 import com.carterchen247.alarmscheduler.storage.AlarmStateDataSource
 import io.mockk.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class AlarmSchedulerImplTest {
 
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
+
     private lateinit var alarmSchedulerImpl: AlarmSchedulerImpl
-    val testDispatcher = TestCoroutineDispatcher()
 
     @Before
     fun setUp() {
@@ -37,17 +35,10 @@ class AlarmSchedulerImplTest {
             ApplicationProvider.getApplicationContext(),
             dataSource
         )
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
-    fun xxxx() = runBlockingTest() {
+    fun xxxx() = runBlockingTest {
         println("xxx xxxx")
         Log.d("xxx", "xxxxxx d")
         val config = AlarmConfig(0, 0)
