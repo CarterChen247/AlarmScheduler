@@ -1,5 +1,6 @@
 package com.carterchen247.alarmscheduler
 
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 
-val applicationScope = GlobalScope
+val applicationScope = CoroutineScope(SupervisorJob())
