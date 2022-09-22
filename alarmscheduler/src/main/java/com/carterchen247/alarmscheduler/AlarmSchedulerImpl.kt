@@ -106,12 +106,17 @@ internal class AlarmSchedulerImpl(
     }
 
     private fun getPendingIntentById(alarmId: Int): PendingIntent? {
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_NO_CREATE
+        }
         val intent = Intent(context, AlarmTriggerReceiver::class.java)
         return PendingIntent.getBroadcast(
             context,
             alarmId,
             intent,
-            PendingIntent.FLAG_NO_CREATE
+            flags
         )
     }
 
