@@ -6,13 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.AlarmManagerCompat
+import com.carterchen247.alarmscheduler.compat.CompatService
 import com.carterchen247.alarmscheduler.constant.Constant
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
 import com.carterchen247.alarmscheduler.error.ErrorHandler
 import com.carterchen247.alarmscheduler.error.ExceptionFactory
 import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.event.EventDispatcher
-import com.carterchen247.alarmscheduler.extension.canScheduleExactAlarmsCompat
 import com.carterchen247.alarmscheduler.extension.toBundle
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.logger.LogMessage
@@ -23,11 +23,12 @@ import com.carterchen247.alarmscheduler.storage.AlarmStateDataSource
 import com.carterchen247.alarmscheduler.task.AlarmTaskFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 internal class AlarmSchedulerImpl(
     private val context: Context,
-    private val alarmStateDataSource: AlarmStateDataSource
+    private val alarmManager: AlarmManager,
+    private val alarmStateDataSource: AlarmStateDataSource,
+    private val compatService: CompatService,
 ) : AlarmSchedulerContract {
 
     private var alarmTaskFactory: AlarmTaskFactory? = null
@@ -53,7 +54,6 @@ internal class AlarmSchedulerImpl(
     override fun cancelAlarmTask(alarmId: Int) {
         Logger.info(LogMessage.onCancelAlarmTask())
         getPendingIntentById(alarmId)?.let { pendingIntent ->
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
             pendingIntent.cancel()
             applicationScope.launch {
@@ -135,12 +135,7 @@ internal class AlarmSchedulerImpl(
 
     private fun scheduleAlarm(alarmInfo: AlarmInfo, callback: ScheduleResultCallback?) {
         Logger.info(LogMessage.onScheduleAlarm(alarmInfo))
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        if (alarmManager == null) {
-            callback?.onResult(ScheduleResult.Failure(ExceptionFactory.nullAlarmManager()))
-            return
-        }
-        if (!alarmManager.canScheduleExactAlarmsCompat()) {
+        if (!compatService.canScheduleExactAlarmsCompat()) {
             callback?.onResult(ScheduleResult.Failure(ExceptionFactory.cannotScheduleExactAlarms()))
             return
         }
