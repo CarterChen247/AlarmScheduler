@@ -45,7 +45,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         applicationScope.launch {
             try {
-                alarmStateDataSource.removeImmediately(alarmId)
+                alarmStateDataSource.removeAlarm(alarmId)
             } catch (exception: Throwable) {
                 ErrorHandler.onError(ExceptionFactory.failedToRemoveAlarmState(exception))
             }

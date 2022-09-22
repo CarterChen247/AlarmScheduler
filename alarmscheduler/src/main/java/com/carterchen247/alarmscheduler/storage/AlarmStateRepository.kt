@@ -6,11 +6,11 @@ internal class AlarmStateRepository(
     private val alarmStateDao: AlarmStateDao
 ) : AlarmStateDataSource {
 
-    override suspend fun add(alarmInfo: AlarmInfo): Long {
+    override suspend fun addAlarm(alarmInfo: AlarmInfo): Long {
         return alarmStateDao.insertEntity(AlarmStateEntity.create(alarmInfo))
     }
 
-    override suspend fun getAll(): List<AlarmInfo> {
+    override suspend fun getAlarms(): List<AlarmInfo> {
         return alarmStateDao.selectAll()
             .map {
                 AlarmInfo(
@@ -22,7 +22,7 @@ internal class AlarmStateRepository(
             }
     }
 
-    override suspend fun removeImmediately(id: Int) {
-        alarmStateDao.removeEntity(AlarmStateEntity(id = id))
+    override suspend fun removeAlarm(alarmId: Int) {
+        alarmStateDao.removeEntity(AlarmStateEntity(id = alarmId))
     }
 }

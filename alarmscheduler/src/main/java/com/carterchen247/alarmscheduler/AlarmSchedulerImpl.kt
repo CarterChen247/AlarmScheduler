@@ -58,7 +58,7 @@ internal class AlarmSchedulerImpl(
             pendingIntent.cancel()
             applicationScope.launch {
                 try {
-                    alarmStateDataSource.removeImmediately(alarmId)
+                    alarmStateDataSource.removeAlarm(alarmId)
                 } catch (exception: Throwable) {
                     ErrorHandler.onError(ExceptionFactory.failedToCancelAlarmTask(exception))
                 }
@@ -70,7 +70,7 @@ internal class AlarmSchedulerImpl(
         Logger.info(LogMessage.onCancelAllAlarmTasks())
         applicationScope.launch {
             try {
-                alarmStateDataSource.getAll()
+                alarmStateDataSource.getAlarms()
                     .forEach {
                         cancelAlarmTask(it.alarmId)
                     }
@@ -83,7 +83,7 @@ internal class AlarmSchedulerImpl(
     override fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback) {
         applicationScope.launch {
             try {
-                val scheduledAlarms = alarmStateDataSource.getAll().filter {
+                val scheduledAlarms = alarmStateDataSource.getAlarms().filter {
                     isAlarmTaskScheduled(it.alarmId)
                 }
                 callback.onResult(scheduledAlarms)
@@ -119,7 +119,7 @@ internal class AlarmSchedulerImpl(
         Logger.info(LogMessage.onRescheduleAlarms())
         applicationScope.launch {
             try {
-                alarmStateDataSource.getAll()
+                alarmStateDataSource.getAlarms()
                     .also {
                         Logger.info(LogMessage.onCalculateRescheduleAlarmsTotalCount(it.size))
                     }
@@ -149,7 +149,7 @@ internal class AlarmSchedulerImpl(
 
         applicationScope.launch(Dispatchers.Main) {
             try {
-                alarmStateDataSource.add(calibratedAlarmInfo)
+                alarmStateDataSource.addAlarm(calibratedAlarmInfo)
                 AlarmManagerCompat.setAlarmClock(
                     alarmManager,
                     calibratedAlarmInfo.triggerTime,

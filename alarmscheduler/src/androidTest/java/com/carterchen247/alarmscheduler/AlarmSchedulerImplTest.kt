@@ -74,10 +74,10 @@ class AlarmSchedulerImplTest {
 
 
     private fun createAlarmStateDataSource() = object : AlarmStateDataSource {
-        override suspend fun add(alarmInfo: AlarmInfo): Long = 0
+        override suspend fun addAlarm(alarmInfo: AlarmInfo): Long = 0
 
-        override suspend fun getAll(): List<AlarmInfo> = emptyList()
+        override suspend fun getAlarms(): List<AlarmInfo> = emptyList()
 
-        override suspend fun removeImmediately(id: Int) = Unit
+        override suspend fun removeAlarm(id: Int) = Unit
     }
 }
