@@ -22,4 +22,5 @@ internal interface AlarmSchedulerContract {
     fun addEventObserver(observer: AlarmSchedulerEventObserver)
     fun removeEventObserver(observer: AlarmSchedulerEventObserver)
     fun schedule(config: AlarmConfig, callback: ScheduleResultCallback?)
+    fun canScheduleExactAlarms(): Boolean
 }

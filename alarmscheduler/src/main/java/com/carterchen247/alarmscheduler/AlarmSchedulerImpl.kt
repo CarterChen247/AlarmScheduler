@@ -105,6 +105,8 @@ internal class AlarmSchedulerImpl(
         scheduleAlarm(config.getInfo(), callback)
     }
 
+    override fun canScheduleExactAlarms() = compatService.canScheduleExactAlarmsCompat()
+
     private fun getPendingIntentById(alarmId: Int): PendingIntent? {
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE

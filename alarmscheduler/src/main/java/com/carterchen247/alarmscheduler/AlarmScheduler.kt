@@ -53,5 +53,7 @@ object AlarmScheduler : AlarmSchedulerContract {
     override fun schedule(config: AlarmConfig, callback: ScheduleResultCallback?) {
         impl.schedule(config, callback)
     }
+
+    override fun canScheduleExactAlarms() = impl.canScheduleExactAlarms()
 }
 
