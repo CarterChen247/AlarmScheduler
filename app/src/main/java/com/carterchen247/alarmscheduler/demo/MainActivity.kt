@@ -47,8 +47,15 @@ class MainActivity : AppCompatActivity() {
                         addLogItem(LogItem("The id of the scheduled alarm = ${result.alarmId}", now.toString()))
                     }
                     is ScheduleResult.Failure -> {
-                        val now = LocalDateTime.now()
-                        addLogItem(LogItem("Alarm scheduling is failed, exception = ${result.exception}", now.toString()))
+                        when (result) {
+                            ScheduleResult.Failure.CannotScheduleExactAlarm -> {
+                                // TODO handle CannotScheduleExactAlarm
+                            }
+                            is ScheduleResult.Failure.Error -> {
+                                val now = LocalDateTime.now()
+                                addLogItem(LogItem("Alarm scheduling is failed, exception = ${result.exception}", now.toString()))
+                            }
+                        }
                     }
                 }
             }

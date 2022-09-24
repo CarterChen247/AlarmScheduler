@@ -141,14 +141,14 @@ internal class AlarmSchedulerImpl(
     private fun scheduleAlarm(alarmInfo: AlarmInfo, callback: ScheduleResultCallback?) {
         Logger.info(LogMessage.onScheduleAlarm(alarmInfo))
         if (!compatService.canScheduleExactAlarmsCompat()) {
-            callback?.onResult(ScheduleResult.Failure(ExceptionFactory.cannotScheduleExactAlarms()))
+            callback?.onResult(ScheduleResult.Failure.CannotScheduleExactAlarm)
             return
         }
         val id = idProvider.generateId(alarmInfo.alarmId)
         val calibratedAlarmInfo = alarmInfo.copy(alarmId = id)
         val pendingIntent = createPendingIntent(calibratedAlarmInfo)
         if (pendingIntent == null) {
-            callback?.onResult(ScheduleResult.Failure(ExceptionFactory.nullPendingIntent()))
+            callback?.onResult(ScheduleResult.Failure.Error(ExceptionFactory.nullPendingIntent()))
             return
         }
 
@@ -164,7 +164,7 @@ internal class AlarmSchedulerImpl(
                 callback?.onResult(ScheduleResult.Success(id))
                 Logger.info(LogMessage.onScheduleAlarmSuccessfully())
             } catch (exception: Throwable) {
-                callback?.onResult(ScheduleResult.Failure(ExceptionFactory.failedToScheduleAlarm(exception)))
+                callback?.onResult(ScheduleResult.Failure.Error(exception))
             }
         }
     }

@@ -7,10 +7,6 @@ internal object ExceptionFactory {
     fun failedToRescheduleAlarms(throwable: Throwable) = IllegalStateException("Failed to rescheduleAlarms", throwable)
     fun failedToCreateAlarmTask(throwable: Throwable) = IllegalStateException("Failed to create AlarmTask triggering callback", throwable)
     fun failedToRemoveAlarmState(throwable: Throwable) = IllegalStateException("Failed to removed triggered alarm id", throwable)
-    fun failedToScheduleAlarm(throwable: Throwable) = Exception("Failed to schedule the alarm", throwable)
-
     fun nullAlarmTaskFactory() = IllegalStateException("Failed creating AlarmTask, alarmTaskFactory is null")
     fun nullPendingIntent() = IllegalStateException("PendingIntent should not be null")
-
-    fun cannotScheduleExactAlarms() = CannotScheduleExactAlarmsException()
 }
