@@ -22,7 +22,7 @@ class App : Application() {
         })
         AlarmScheduler.setLogger(AlarmSchedulerLogger.DEBUG)
         AlarmScheduler.setErrorHandler(object : AlarmSchedulerErrorHandler {
-            override fun onError(error: Throwable) {
+            override fun handleError(error: Throwable) {
                 Timber.e(error)
                 LogObservable.dispatchMessage("error occurs, error=$error")
             }

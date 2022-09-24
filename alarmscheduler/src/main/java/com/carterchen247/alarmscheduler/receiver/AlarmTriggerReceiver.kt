@@ -32,7 +32,7 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
         }
         val alarmTaskFactory = alarmSchedulerImpl.getAlarmTaskFactory()
         if (alarmTaskFactory == null) {
-            ErrorHandler.onError(ExceptionFactory.nullAlarmTaskFactory())
+            ErrorHandler.handleError(ExceptionFactory.nullAlarmTaskFactory())
             return
         }
 
@@ -41,13 +41,13 @@ internal class AlarmTriggerReceiver : BroadcastReceiver() {
             val alarmTask = alarmTaskFactory.createAlarmTask(alarmType)
             alarmTask.onAlarmFires(alarmId, DataPayload(bundle.toMap()))
         } catch (throwable: Throwable) {
-            ErrorHandler.onError(ExceptionFactory.failedToCreateAlarmTask(throwable))
+            ErrorHandler.handleError(ExceptionFactory.failedToCreateAlarmTask(throwable))
         }
         applicationScope.launch {
             try {
                 alarmStateDataSource.removeAlarm(alarmId)
             } catch (exception: Throwable) {
-                ErrorHandler.onError(ExceptionFactory.failedToRemoveAlarmState(exception))
+                ErrorHandler.handleError(ExceptionFactory.failedToRemoveAlarmState(exception))
             }
         }
     }

@@ -60,7 +60,7 @@ internal class AlarmSchedulerImpl(
                 try {
                     alarmStateDataSource.removeAlarm(alarmId)
                 } catch (exception: Throwable) {
-                    ErrorHandler.onError(ExceptionFactory.failedToCancelAlarmTask(exception))
+                    ErrorHandler.handleError(ExceptionFactory.failedToCancelAlarmTask(exception))
                 }
             }
         }
@@ -75,7 +75,7 @@ internal class AlarmSchedulerImpl(
                         cancelAlarmTask(it.alarmId)
                     }
             } catch (exception: Throwable) {
-                ErrorHandler.onError(ExceptionFactory.failedToCancelAllAlarmTasks(exception))
+                ErrorHandler.handleError(ExceptionFactory.failedToCancelAllAlarmTasks(exception))
             }
         }
     }
@@ -88,7 +88,7 @@ internal class AlarmSchedulerImpl(
                 }
                 callback.onResult(scheduledAlarms)
             } catch (exception: Throwable) {
-                ErrorHandler.onError(ExceptionFactory.failedToGetScheduledAlarmTaskCountAsync(exception))
+                ErrorHandler.handleError(ExceptionFactory.failedToGetScheduledAlarmTaskCountAsync(exception))
             }
         }
     }
@@ -133,7 +133,7 @@ internal class AlarmSchedulerImpl(
                     }
 
             } catch (exception: Throwable) {
-                ErrorHandler.onError(ExceptionFactory.failedToRescheduleAlarms(exception))
+                ErrorHandler.handleError(ExceptionFactory.failedToRescheduleAlarms(exception))
             }
         }
     }
