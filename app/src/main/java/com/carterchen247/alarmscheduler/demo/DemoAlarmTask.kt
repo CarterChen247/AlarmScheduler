@@ -1,6 +1,6 @@
 package com.carterchen247.alarmscheduler.demo
 
-import com.carterchen247.alarmscheduler.demo.log.LogObservable
+import com.carterchen247.alarmscheduler.demo.log.EventBus
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.task.AlarmTask
 
@@ -15,6 +15,6 @@ class DemoAlarmTask : AlarmTask {
             The callback of the scheduled alarm triggered.
             alarmId=$alarmId, dataPayload=${dataPayload}
         """.trimIndent()
-        LogObservable.dispatchMessage(msg)
+        EventBus.dispatchMessage(msg)
     }
 }

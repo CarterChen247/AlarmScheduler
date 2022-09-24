@@ -7,68 +7,47 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.carterchen247.alarmscheduler.AlarmScheduler
-import com.carterchen247.alarmscheduler.demo.log.LogItem
-import com.carterchen247.alarmscheduler.demo.log.LogItemAdapter
-import com.carterchen247.alarmscheduler.demo.log.LogObservable
-import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
-import com.carterchen247.alarmscheduler.event.ScheduleExactAlarmPermissionGrantedEvent
+import com.carterchen247.alarmscheduler.demo.databinding.ActivityMainBinding
+import com.carterchen247.alarmscheduler.demo.log.EventBus
+import com.carterchen247.alarmscheduler.demo.log.ListItem
+import com.carterchen247.alarmscheduler.demo.log.ListItemAdapter
 import com.carterchen247.alarmscheduler.extension.openExactAlarmSettingPage
-import com.carterchen247.alarmscheduler.model.AlarmConfig
-import com.carterchen247.alarmscheduler.model.AlarmInfo
-import com.carterchen247.alarmscheduler.model.ScheduleResult
-import com.carterchen247.alarmscheduler.model.ScheduledAlarmsCallback
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.math.max
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
-    private val logItemAdapter = LogItemAdapter()
-    private lateinit var logList: RecyclerView
-    private val alarmSchedulerEventObserver = createAlarmSchedulerEventObserver()
+    private lateinit var binding: ActivityMainBinding
+    private val presenter by lazy { MainPresenter(this) }
+    private val listItemAdapter by lazy { ListItemAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        initLogList()
-        AlarmScheduler.addEventObserver(alarmSchedulerEventObserver)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initListView()
+        presenter.init()
 
-        findViewById<View>(R.id.btnSchedule).setOnClickListener {
-            val config = AlarmConfig(
-                Date().time + 10000L,
-                DemoAlarmTask.TYPE
-            ) {
-                dataPayload("reminder" to "have a meeting")
-            }
-            AlarmScheduler.schedule(config) { result ->
-                // result callback is optional
-                when (result) {
-                    is ScheduleResult.Success -> {
-                        val now = LocalDateTime.now()
-                        addLogItem(LogItem("The id of the scheduled alarm = ${result.alarmId}", now.toString()))
-                    }
-                    is ScheduleResult.Failure -> {
-                        when (result) {
-                            ScheduleResult.Failure.CannotScheduleExactAlarm -> {
-                                showExactAlarmPermissionSetupDialog()
-                            }
-                            is ScheduleResult.Failure.Error -> {
-                                val now = LocalDateTime.now()
-                                addLogItem(LogItem("Alarm scheduling is failed, exception = ${result.exception}", now.toString()))
-                            }
-                        }
-                    }
-                }
-            }
+        binding.btnSchedule.setOnClickListener {
+            presenter.scheduleAlarm()
         }
 
-        findViewById<View>(R.id.btnGetScheduledAlarmsInfo).setOnClickListener {
-            requestScheduledAlarmsInfo()
+        binding.btnGetScheduledAlarmsInfo.setOnClickListener {
+            presenter.requestScheduledAlarmsInfo()
+        }
+
+        EventBus.setObserver { msg ->
+            val now = LocalDateTime.now()
+            addListItem(ListItem(msg, now.toString()))
         }
     }
 
-    private fun showExactAlarmPermissionSetupDialog() {
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.destroy()
+    }
+
+    override fun showExactAlarmPermissionSetupDialog() {
         AlertDialog.Builder(this)
             .setTitle("Cannot schedule")
             .setMessage("Exact alarm permission is needed to schedule an alarm")
@@ -80,50 +59,23 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AlarmScheduler.removeEventObserver(alarmSchedulerEventObserver)
-    }
-
-    private fun createAlarmSchedulerEventObserver() = AlarmSchedulerEventObserver { event ->
-        if (event is ScheduleExactAlarmPermissionGrantedEvent) {
-            val now = LocalDateTime.now()
-            addLogItem(LogItem("The permission to schedule exact alarms has been granted", now.toString()))
-        }
-    }
-
-    private fun requestScheduledAlarmsInfo() {
-        AlarmScheduler.getScheduledAlarmsAsync(object : ScheduledAlarmsCallback {
-            override fun onResult(scheduledAlarms: List<AlarmInfo>) {
-                val msg = "scheduled alarms=$scheduledAlarms"
-                val now = LocalDateTime.now()
-                addLogItem(LogItem(msg, now.toString()))
-            }
-        })
-    }
-
-    private fun initLogList() {
-        logList = findViewById(R.id.logList)
-        logList.run {
+    private fun initListView() {
+        binding.listView.run {
             addItemDecoration(createItemDecoration())
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = logItemAdapter
-        }
-        LogObservable.setObserver { msg ->
-            val now = LocalDateTime.now()
-            addLogItem(LogItem(msg, now.toString()))
+            adapter = listItemAdapter
         }
     }
 
-    private fun addLogItem(item: LogItem) {
+    override fun addListItem(item: ListItem) {
         runOnUiThread {
-            logItemAdapter.addItem(item)
+            listItemAdapter.addItem(item)
             scrollToBottom()
         }
     }
 
     private fun scrollToBottom() {
-        logList.scrollToPosition(max(0, logItemAdapter.itemCount - 1))
+        binding.listView.scrollToPosition(max(0, listItemAdapter.itemCount - 1))
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {

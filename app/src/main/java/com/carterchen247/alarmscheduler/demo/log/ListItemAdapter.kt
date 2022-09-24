@@ -7,12 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.carterchen247.alarmscheduler.demo.R
 
-class LogItemAdapter : RecyclerView.Adapter<LogItemAdapter.ViewHolder>() {
+class ListItemAdapter : RecyclerView.Adapter<ListItemAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<LogItem>()
+    private val items = mutableListOf<ListItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_log, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -23,13 +23,13 @@ class LogItemAdapter : RecyclerView.Adapter<LogItemAdapter.ViewHolder>() {
         holder.bind(items[position])
     }
 
-    fun addItem(item: LogItem) {
+    fun addItem(item: ListItem) {
         items.add(item)
         notifyItemInserted(items.size - 1)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(item: LogItem) {
+        fun bind(item: ListItem) {
             itemView.findViewById<TextView>(R.id.tvLog).text = item.msg
             itemView.findViewById<TextView>(R.id.tvTime).text = item.time
         }

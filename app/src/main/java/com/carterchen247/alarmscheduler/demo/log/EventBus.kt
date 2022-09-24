@@ -1,6 +1,6 @@
 package com.carterchen247.alarmscheduler.demo.log
 
-object LogObservable {
+object EventBus {
     private var observer: ((String) -> Unit)? = null
 
     fun dispatchMessage(msg: String) {
