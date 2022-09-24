@@ -3,6 +3,7 @@ package com.carterchen247.alarmscheduler.demo
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.carterchen247.alarmscheduler.demo.log.LogItemAdapter
 import com.carterchen247.alarmscheduler.demo.log.LogObservable
 import com.carterchen247.alarmscheduler.event.AlarmSchedulerEventObserver
 import com.carterchen247.alarmscheduler.event.ScheduleExactAlarmPermissionGrantedEvent
+import com.carterchen247.alarmscheduler.extension.openExactAlarmSettingPage
 import com.carterchen247.alarmscheduler.model.AlarmConfig
 import com.carterchen247.alarmscheduler.model.AlarmInfo
 import com.carterchen247.alarmscheduler.model.ScheduleResult
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                     is ScheduleResult.Failure -> {
                         when (result) {
                             ScheduleResult.Failure.CannotScheduleExactAlarm -> {
-                                // TODO handle CannotScheduleExactAlarm
+                                showExactAlarmPermissionSetupDialog()
                             }
                             is ScheduleResult.Failure.Error -> {
                                 val now = LocalDateTime.now()
@@ -64,6 +66,18 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.btnGetScheduledAlarmsInfo).setOnClickListener {
             requestScheduledAlarmsInfo()
         }
+    }
+
+    private fun showExactAlarmPermissionSetupDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Cannot schedule")
+            .setMessage("Exact alarm permission is needed to schedule an alarm")
+            .setPositiveButton("setup") { _, _ ->
+                openExactAlarmSettingPage()
+            }
+            .setNegativeButton("cancel") { _, _ -> }
+            .create()
+            .show()
     }
 
     override fun onDestroy() {
