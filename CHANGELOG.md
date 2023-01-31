@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.4...v2.0.0) (2023-01-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* adjust AlarmSchedulerLogger api
+
+### Features
+
+* add Activity.openExactAlarmSettingPage extension function ([6e7ba13](https://github.com/CarterChen247/AlarmScheduler/commit/6e7ba136863103176a925eda66231c0b8923d727))
+* add android:exported="true" flag to MainActivity of demo app ([69029bc](https://github.com/CarterChen247/AlarmScheduler/commit/69029bcd6efb8f838cacd1d2c8d6a51f8dd3af05))
+* add canScheduleExactAlarms function ([e0c3965](https://github.com/CarterChen247/AlarmScheduler/commit/e0c396531a5fc8c3d1331340107430d386f0813e))
+* add EventObserver. Add ScheduleExactAlarmPermissionGrantedEvent ([ac6e78f](https://github.com/CarterChen247/AlarmScheduler/commit/ac6e78f59dc3627c3e966af06f902c69c8958752))
+* add PendingIntent.FLAG_IMMUTABLE flag when creating PendingIntent ([d838a71](https://github.com/CarterChen247/AlarmScheduler/commit/d838a71a5bfc3840d561ea7521466efb1e63f9d2))
+* add SCHEDULE_EXACT_ALARM permission to AndroidManifest.xml ([649def8](https://github.com/CarterChen247/AlarmScheduler/commit/649def8504b0fc2f1b847e3cf61945cc688f205d))
+* add scheduleAlarm util function ([ad6e906](https://github.com/CarterChen247/AlarmScheduler/commit/ad6e906d0d27ee448c7d560494317e9c6c6a952e))
+* migrate compileSdkVersion and targetSdkVersion to Android 12 (Android S) ([bac22e4](https://github.com/CarterChen247/AlarmScheduler/commit/bac22e494dc851e9b82bf3996792920c043b6a3e))
+* **sample app:** add time information ([6ca3cf1](https://github.com/CarterChen247/AlarmScheduler/commit/6ca3cf1221b4fdb9815c8c0f1c1a5a693d5bdf8e))
+* **sonatype:** setup library module gradle ([be8aeb2](https://github.com/CarterChen247/AlarmScheduler/commit/be8aeb29d505b6acb17716e225f4d2577dd21370))
+* **sonatype:** setup root project gradle ([5f8852e](https://github.com/CarterChen247/AlarmScheduler/commit/5f8852ee17aba4973fd13679f8a223ad60f78647))
+* update gradle version. Fix init gradle issue ([f074f99](https://github.com/CarterChen247/AlarmScheduler/commit/f074f99f159a9c611498338c6ad208b0f00142fc))
+* upgrade android.test.ext:junit version to 1.1.3 to fix gradle build failure ([a20d4a9](https://github.com/CarterChen247/AlarmScheduler/commit/a20d4a98e2a1fa54509d4e4ce6d9b2287d61d7d9))
+* upgrade Kotlin version to 1.4.31 ([854e7c6](https://github.com/CarterChen247/AlarmScheduler/commit/854e7c67fc3263f9f422bb7d8d97640c09839155))
+* upgrade Kotlin version to 1.5.32. Remove kotlin-android-extensions plugin ([bcef796](https://github.com/CarterChen247/AlarmScheduler/commit/bcef7963d663c4408fe863e1798e7f89f76ae8bb))
+* use content provider to do initialization ([5c2542f](https://github.com/CarterChen247/AlarmScheduler/commit/5c2542f15dea785421c4449f6a82c5b5c1f85165))
+
+
+### Bug Fixes
+
+* fix Android S FLAG_IMMUTABLE issue ([024d8cb](https://github.com/CarterChen247/AlarmScheduler/commit/024d8cbe520f857734f9b4c6c24ab9181bc2287c))
+* fix build failed on Apple M1 with JDK8-arm64 ([131a44f](https://github.com/CarterChen247/AlarmScheduler/commit/131a44ffc115f32a293bf4971cae6e9c0aa3dc62)), closes [/developer.android.com/jetpack/androidx/releases/room#2](https://github.com/CarterChen247//developer.android.com/jetpack/androidx/releases/room/issues/2)
+
+
+* Merge pull request #13 from CarterChen247/refactor/logger-system ([c16146c](https://github.com/CarterChen247/AlarmScheduler/commit/c16146c0a609776a702eb5cc8bf1451917f0704d)), closes [#13](https://github.com/CarterChen247/AlarmScheduler/issues/13)
+
 ### [1.0.4](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.3...v1.0.4) (2020-10-17)
 
 
