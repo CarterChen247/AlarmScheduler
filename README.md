@@ -2,66 +2,154 @@
 
 ![](https://img.shields.io/maven-central/v/com.carterchen247/alarm-scheduler) 
 ![](https://img.shields.io/github/languages/top/CarterChen247/AlarmScheduler)
-![](https://img.shields.io/github/workflow/status/CarterChen247/AlarmScheduler/Test/master)
+![](https://img.shields.io/github/actions/workflow/status/CarterChen247/AlarmScheduler/.github/workflows/android.yml?branch=master)
 
 
-Since WorkManager handles the tasks which are guaranteed to be executed and it does not support time-exact tasks, we provide a library that helps to schedule tasks which is needed to be triggered at a specific time. (like calendar reminders, alarms, etc.)
 
-**AlarmScheduler** is built on top of **AlarmManager** + **Kotlin Coroutines** + **Room**.
 
-## Gradle
 
-```
+
+
+
+**AlarmScheduler is a tool to schedule time exact tasks, even in very short period of time.**
+
+**AlarmScheduler provides various supports:**
+
+- Easy-to-use API
+- Android 12+ (Android S+) support
+- Alarms survive after device reboot
+- debuggable with built-in logger
+
+**AlarmScheduler** is built on top of **AlarmManager** + **Kotlin Coroutines** + **Room** and ❤️ !!
+
+## Add AlarmScheduler **to your project**
+
+### Gradle ![](https://img.shields.io/maven-central/v/com.carterchen247/alarm-scheduler) 
+
+Add the dependency to your **module**'s `build.gradle` file:
+
+```groovy
 dependencies {
     implementation 'com.carterchen247:alarm-scheduler:x.x.x'
 }
 ```
 
-##  Usage
+## How to Use
 
-Please build `app` module for demo and more information.
+To see the complete usage of AlarmScheduler, please build and refer to the [demo app](https://github.com/CarterChen247/AlarmScheduler/tree/develop/app).
 
-### Initialization
+### Schedule an Alarm
+
+#### 1️⃣ Define a AlarmTask callback
+
 ```kotlin
-class App : Application() {
+AlarmScheduler.setAlarmTaskFactory(object : AlarmTaskFactory {
+    override fun createAlarmTask(alarmType: Int): AlarmTask {
+        return MyAlarmTask()
+    }
+})
+```
 
-    override fun onCreate() {
-        super.onCreate()
-        // init AlarmScheduler
-        AlarmScheduler.init(this)
-        
-        // bind AlarmTaskFactory to create different types of tasks when the alarm fires
-        AlarmScheduler.setAlarmTaskFactory(object : AlarmTaskFactory {
-            override fun createAlarmTask(alarmType: Int): AlarmTask {
-                return DemoAlarmTask()
-            }
-        })
-        
-        // (optional) set logger to see detail logs
-        AlarmScheduler.setLogger(AlarmSchedulerLoggerImpl())
+```kotlin
+class MyAlarmTask : AlarmTask {
+    override fun onAlarmFires(alarmId: Int, dataPayload: DataPayload) {
+        // do something with dataPayload you set
+    }
+
+    companion object {
+        const val TYPE = 1
     }
 }
 ```
 
-### Schedule a task
+#### 2️⃣ And then just schedule it!
 
 ```kotlin
-// schedule an alarm which fires after 10 seconds
-AlarmConfig(System.currentTimeMillis() + 10000L, DemoAlarmTask.TYPE) {
-    dataPayload(DataPayload().apply { putString("reminder", "have a meeting") })
-}.schedule()
+val config = AlarmConfig(
+    Date().time + 10000L, // trigger time
+    MyAlarmTask.TYPE
+) {
+    dataPayload("reminder" to "have a meeting")
+}
+
+AlarmScheduler.schedule(config){ ... }
 ```
 
-### Other features
+#### 3️⃣ Handle the result on your own
+
+```kotlin
+AlarmScheduler.schedule(config) { result: ScheduleResult ->
+    when (result) {
+        is ScheduleResult.Success -> {
+            // alarm scheduling success!
+        }
+        is ScheduleResult.Failure -> {
+            when (result) {
+                ScheduleResult.Failure.CannotScheduleExactAlarm -> {
+                    // handle scenarios like user disables exact alarm permission
+                }
+                is ScheduleResult.Failure.Error -> {
+                    // handle error
+                }
+            }
+        }
+    }
+}
+```
+
+### For Android 12+
+
+When receiving a `CannotScheduleExactAlarm` failure result, it means the user disable the exact alarm permission. Try to use `openExactAlarmSettingPage()`  extension function with prompts to guide your user.
+
+```kotlin
+fun Activity.openExactAlarmSettingPage() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+    }
+}
+```
+
+get notified once user grants the exact alarm permission.
+
+```kotlin
+AlarmSchedulerEventObserver { event ->
+    if (event is ScheduleExactAlarmPermissionGrantedEvent) {
+	// get notified
+    }
+}
+```
+
+### Debugging
+
+If something is not working, enable the built-in logger to see what’s going on.
+
+```kotlin
+AlarmScheduler.setLogger(AlarmSchedulerLogger.DEBUG)
+```
+
+### Other Features
+
+```kotlin
+AlarmScheduler.getScheduledAlarmsAsync { scheduledAlarms: List<AlarmInfo> ->
+    // list the scheduled alarms 
+}
+```
+
+There are more! refer to [AlarmSchedulerContract](https://github.com/CarterChen247/AlarmScheduler/blob/develop/alarmscheduler/src/main/java/com/carterchen247/alarmscheduler/AlarmSchedulerContract.kt) see full APIs.
 
 ```kotlin
 internal interface AlarmSchedulerContract {
     fun setAlarmTaskFactory(alarmTaskFactory: AlarmTaskFactory)
-    fun setLogger(logger: AlarmSchedulerLogger?)
+    fun setLogger(loggerImpl: AlarmSchedulerLogger)
+    fun setErrorHandler(errorHandler: AlarmSchedulerErrorHandler)
     fun isAlarmTaskScheduled(alarmId: Int): Boolean
     fun cancelAlarmTask(alarmId: Int)
     fun cancelAllAlarmTasks()
-    fun getScheduledAlarmTaskCountAsync(callback: AlarmTaskCountCallback)
+    fun getScheduledAlarmsAsync(callback: ScheduledAlarmsCallback)
+    fun addEventObserver(observer: AlarmSchedulerEventObserver)
+    fun removeEventObserver(observer: AlarmSchedulerEventObserver)
+    fun schedule(config: AlarmConfig, callback: ScheduleResultCallback?)
+    fun canScheduleExactAlarms(): Boolean
 }
 ```
 
