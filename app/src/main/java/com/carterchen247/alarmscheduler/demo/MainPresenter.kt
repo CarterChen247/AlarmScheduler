@@ -30,7 +30,7 @@ class MainPresenter(
             when (result) {
                 is ScheduleResult.Success -> {
                     val now = LocalDateTime.now()
-                    view.addListItem(ListItem("The id of the scheduled alarm = ${result.alarmId}", now.toString()))
+                    view.addListItem(ListItem("The scheduled alarm id = ${result.alarmId}", now.toString()))
                 }
                 is ScheduleResult.Failure -> {
                     when (result) {
@@ -39,7 +39,7 @@ class MainPresenter(
                         }
                         is ScheduleResult.Failure.Error -> {
                             val now = LocalDateTime.now()
-                            view.addListItem(ListItem("Alarm scheduling is failed, exception = ${result.exception}", now.toString()))
+                            view.addListItem(ListItem("Alarm scheduling has failed, exception = ${result.exception}", now.toString()))
                         }
                     }
                 }
@@ -49,7 +49,7 @@ class MainPresenter(
 
     fun requestScheduledAlarmsInfo() {
         AlarmScheduler.getScheduledAlarmsAsync { scheduledAlarms ->
-            val msg = "scheduled alarms=$scheduledAlarms"
+            val msg = "Scheduled alarms = $scheduledAlarms"
             val now = LocalDateTime.now()
             view.addListItem(ListItem(msg, now.toString()))
         }
@@ -58,7 +58,7 @@ class MainPresenter(
     private fun createAlarmSchedulerEventObserver() = AlarmSchedulerEventObserver { event ->
         if (event is ScheduleExactAlarmPermissionGrantedEvent) {
             val now = LocalDateTime.now()
-            view.addListItem(ListItem("The permission to schedule exact alarms has been granted", now.toString()))
+            view.addListItem(ListItem("Permission has been granted for scheduling exact alarms.", now.toString()))
         }
     }
 

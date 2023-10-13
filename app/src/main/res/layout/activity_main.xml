@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:text="Schedule an alarm (triggers after 10s)"
+        android:text="Schedule a delay alarm (10s)"
         app:layout_constraintBottom_toTopOf="@id/btnGetScheduledAlarmsInfo"
         tools:ignore="HardcodedText" />
 
