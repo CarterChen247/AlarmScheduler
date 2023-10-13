@@ -12,8 +12,9 @@ class DemoAlarmTask : AlarmTask {
 
     override fun onAlarmFires(alarmId: Int, dataPayload: DataPayload) {
         val msg = """
-            The callback of the scheduled alarm triggered.
-            alarmId=$alarmId, dataPayload=${dataPayload}
+            onAlarmFires callback was triggered.
+            alarmId=$alarmId
+            dataPayload=${dataPayload}
         """.trimIndent()
         EventBus.dispatchMessage(msg)
     }
