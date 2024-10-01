@@ -153,7 +153,15 @@ internal interface AlarmSchedulerContract {
 ```
 
 ## Dealing with behavior changes
-### Android 14 - [Schedule exact alarms are denied by default](https://developer.android.com/about/versions/14/behavior-changes-all#schedule-exact-alarms)
+### [Android 15 - Changes to package stopped state](https://developer.android.com/about/versions/15/behavior-changes-all#enhanced-stop-states)
+
+>**✅ Tested**
+
+By using AlarmScheduler, when the app recovers from the stopped state, it will automatically detect the `ACTION_BOOT_COMPLETED` action, and alarms will be automatically rescheduled.
+
+### [Android 14 - Schedule exact alarms are denied by default](https://developer.android.com/about/versions/14/behavior-changes-all#schedule-exact-alarms)
+
+> **✅ Handled**
 
 To handle the behavior change in Android 14, use `ScheduleResultCallback` when calling `AlarmScheduler.schedule()`. This callback will return one of the following results:
 
