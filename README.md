@@ -16,7 +16,6 @@
 **AlarmScheduler provides various supports:**
 
 - Easy-to-use API
-- Android 12+ (Android S+) support
 - Alarms survive after device reboot
 - debuggable with built-in logger
 
@@ -150,6 +149,58 @@ internal interface AlarmSchedulerContract {
     fun removeEventObserver(observer: AlarmSchedulerEventObserver)
     fun schedule(config: AlarmConfig, callback: ScheduleResultCallback?)
     fun canScheduleExactAlarms(): Boolean
+}
+```
+
+## Dealing with behavior changes
+### Android 14 - [Schedule exact alarms are denied by default](https://developer.android.com/about/versions/14/behavior-changes-all#schedule-exact-alarms)
+
+To handle the behavior change in Android 14, use `ScheduleResultCallback` when calling `AlarmScheduler.schedule()`. This callback will return one of the following results:
+
+- `Success`: The alarm was successfully scheduled.
+- `Failure.CannotScheduleExactAlarm`: The app doesn't have permission to schedule exact alarms.
+- `Failure.Error`: An error occurred during scheduling.
+
+Here's how to use it:
+
+```kotlin
+AlarmScheduler.schedule(config) { result: ScheduleResult ->
+    when (result) {
+        is ScheduleResult.Success -> {
+            // Alarm scheduling success!
+        }
+        is ScheduleResult.Failure -> {
+            when (result) {
+                ScheduleResult.Failure.CannotScheduleExactAlarm -> {
+                    // Handle scenarios like user disables exact alarm permission
+                    // Consider prompting the user to grant permission
+                }
+                is ScheduleResult.Failure.Error -> {
+                    // Handle other errors
+                }
+            }
+        }
+    }
+}
+```
+
+For Android 12 and above, you can use the `openExactAlarmSettingPage()` extension function to guide users to the exact alarm permission settings:
+
+```kotlin
+fun Activity.openExactAlarmSettingPage() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+    }
+}
+```
+
+You can also get notified when the user grants the exact alarm permission:
+
+```kotlin
+AlarmSchedulerEventObserver { event ->
+    if (event is ScheduleExactAlarmPermissionGrantedEvent) {
+        // Permission granted, you can try scheduling the alarm again
+    }
 }
 ```
 
