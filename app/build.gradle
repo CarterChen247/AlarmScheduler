@@ -2,7 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk = 34
+    compileSdk = 35
+    namespace 'com.carterchen247.alarmscheduler.demo'
 
     defaultConfig {
         applicationId "com.carterchen247.alarmscheduler"

@@ -4,7 +4,8 @@ apply plugin: 'kotlin-kapt'
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdk = 34
+    compileSdk = 35
+    namespace 'com.carterchen247.alarmscheduler'
 
     defaultConfig {
         minSdkVersion 21
