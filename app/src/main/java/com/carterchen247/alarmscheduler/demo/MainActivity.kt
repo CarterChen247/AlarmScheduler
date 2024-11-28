@@ -3,7 +3,6 @@ package com.carterchen247.alarmscheduler.demo
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import com.carterchen247.alarmscheduler.AbstractListActivity
 import com.carterchen247.alarmscheduler.demo.log.ListItem
 import com.carterchen247.alarmscheduler.demo.log.MessageDispatcher
 import com.carterchen247.alarmscheduler.extension.openExactAlarmSettingPage
