@@ -2,7 +2,7 @@ package com.carterchen247.alarmscheduler.demo
 
 import android.app.Application
 import com.carterchen247.alarmscheduler.AlarmScheduler
-import com.carterchen247.alarmscheduler.demo.log.EventBus
+import com.carterchen247.alarmscheduler.demo.log.MessageDispatcher
 import com.carterchen247.alarmscheduler.error.AlarmSchedulerErrorHandler
 import com.carterchen247.alarmscheduler.logger.AlarmSchedulerLogger
 import com.carterchen247.alarmscheduler.task.AlarmTask
@@ -15,6 +15,7 @@ class App : Application() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
 
+
         AlarmScheduler.setAlarmTaskFactory(object : AlarmTaskFactory {
             override fun createAlarmTask(alarmType: Int): AlarmTask {
                 return DemoAlarmTask()
@@ -24,7 +25,7 @@ class App : Application() {
         AlarmScheduler.setErrorHandler(object : AlarmSchedulerErrorHandler {
             override fun handleError(error: Throwable) {
                 Timber.e(error)
-                EventBus.dispatchMessage("error occurs, error=$error")
+                MessageDispatcher.dispatchMessage("error occurs, error=$error")
             }
         })
     }

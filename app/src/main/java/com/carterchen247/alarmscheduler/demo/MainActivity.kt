@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.carterchen247.alarmscheduler.demo.databinding.ActivityMainBinding
-import com.carterchen247.alarmscheduler.demo.log.EventBus
 import com.carterchen247.alarmscheduler.demo.log.ListItem
 import com.carterchen247.alarmscheduler.demo.log.ListItemAdapter
+import com.carterchen247.alarmscheduler.demo.log.MessageDispatcher
 import com.carterchen247.alarmscheduler.extension.openExactAlarmSettingPage
 import java.time.LocalDateTime
 import kotlin.math.max
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), MainView {
             presenter.requestScheduledAlarmsInfo()
         }
 
-        EventBus.setObserver { msg ->
+        MessageDispatcher.subscribeMessage { msg ->
             val now = LocalDateTime.now()
             addListItem(ListItem(msg, now.toString()))
         }

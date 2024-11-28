@@ -1,13 +1,13 @@
 package com.carterchen247.alarmscheduler.demo.log
 
-object EventBus {
+object MessageDispatcher {
     private var observer: ((String) -> Unit)? = null
 
     fun dispatchMessage(msg: String) {
         observer?.invoke(msg)
     }
 
-    fun setObserver(observer: ((String) -> Unit)) {
+    fun subscribeMessage(observer: ((String) -> Unit)) {
         this.observer = observer
     }
 }
