@@ -49,7 +49,7 @@ class MainPresenter(
 
     fun requestScheduledAlarmsInfo() {
         AlarmScheduler.getScheduledAlarmsAsync { scheduledAlarms ->
-            val msg = "Scheduled alarms = $scheduledAlarms"
+            val msg = "Scheduled alarms = ${PrettyFormatter.format(scheduledAlarms)}"
             val now = LocalDateTime.now()
             view.addListItem(ListItem(msg, now.toString()))
         }

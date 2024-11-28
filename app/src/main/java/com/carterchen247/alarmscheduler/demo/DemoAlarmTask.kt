@@ -3,7 +3,6 @@ package com.carterchen247.alarmscheduler.demo
 import com.carterchen247.alarmscheduler.demo.log.MessageDispatcher
 import com.carterchen247.alarmscheduler.model.DataPayload
 import com.carterchen247.alarmscheduler.task.AlarmTask
-import com.google.gson.GsonBuilder
 
 class DemoAlarmTask : AlarmTask {
 
@@ -12,13 +11,12 @@ class DemoAlarmTask : AlarmTask {
     }
 
     override fun onAlarmFires(alarmId: Int, dataPayload: DataPayload) {
-        val msg = """
-            onAlarmFires callback was triggered.
-            alarmId=$alarmId
-            dataPayload=
-        """.trimIndent()
-
-        val dataPayloadString = GsonBuilder().setPrettyPrinting().create().toJson(dataPayload)
-        MessageDispatcher.dispatchMessage(msg + dataPayloadString)
+        val map = buildMap {
+            put("alarmId", alarmId)
+            put("alarmType", TYPE)
+            put("dataPayload", dataPayload)
+        }
+        val msg = """Alarm triggered = ${PrettyFormatter.format(map)}""".trimIndent()
+        MessageDispatcher.dispatchMessage(msg)
     }
 }
