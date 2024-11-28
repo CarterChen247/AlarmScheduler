@@ -1,4 +1,4 @@
-package com.carterchen247.alarmscheduler
+package com.carterchen247.alarmscheduler.demo
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -6,9 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.carterchen247.alarmscheduler.demo.MainPresenter
-import com.carterchen247.alarmscheduler.demo.MainView
-import com.carterchen247.alarmscheduler.demo.R
 import com.carterchen247.alarmscheduler.demo.log.ListItem
 import com.carterchen247.alarmscheduler.demo.log.ListItemAdapter
 import kotlin.math.max
