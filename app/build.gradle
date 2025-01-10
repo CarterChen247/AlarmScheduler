@@ -2,12 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
+    compileSdk = 35
+    namespace 'com.carterchen247.alarmscheduler.demo'
 
     defaultConfig {
         applicationId "com.carterchen247.alarmscheduler"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
 
