@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/CarterChen247/AlarmScheduler/compare/v2.0.0...v2.1.0) (2023-10-13)
+
+
+### Features
+
+* add app icon ([1947373](https://github.com/CarterChen247/AlarmScheduler/commit/19473735729dcfd1dad631bac887acdbe86502d3))
+* migrate targetSdkVersion to 33 ([3ebb95b](https://github.com/CarterChen247/AlarmScheduler/commit/3ebb95b581cd94a1bbbc16e79f62e2c2bb684928))
+* pretty print data payload using Gson ([edab439](https://github.com/CarterChen247/AlarmScheduler/commit/edab439fa4a3fb0720e8027d79e3a94f16aaff19))
+* upgrade compileSdkVersion from 33 to 34 ([fc00bc5](https://github.com/CarterChen247/AlarmScheduler/commit/fc00bc5caecea4a179e63a226bca7d70dacb4922))
+* when alarms & reminders permission is not granted, guide user to the permission page directly ([d3700b8](https://github.com/CarterChen247/AlarmScheduler/commit/d3700b8e22f3cb2c7d914bfab0337f08e304b1de))
+
 ## [2.0.0](https://github.com/CarterChen247/AlarmScheduler/compare/v1.0.4...v2.0.0) (2023-01-31)
 
 
