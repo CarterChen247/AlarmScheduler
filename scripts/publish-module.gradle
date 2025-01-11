@@ -10,7 +10,7 @@ artifacts {
     archives androidSourcesJar
 }
 
-def libraryVersion = '2.1.0'
+def libraryVersion = '2.2.0-alpha01'
 afterEvaluate {
     publishing {
         publications {
