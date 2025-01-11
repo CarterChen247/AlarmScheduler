@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0-alpha01](https://github.com/CarterChen247/AlarmScheduler/compare/v2.1.0...v2.2.0-alpha01) (2025-01-11)
+
+
+### Features
+
+* migrate targetSdkVersion 33 => 34 ([e0833d6](https://github.com/CarterChen247/AlarmScheduler/commit/e0833d67343cff83b9c0b2ed923a18b330830f82))
+* migrate targetSdkVersion 34 => 35 ([4db32e3](https://github.com/CarterChen247/AlarmScheduler/commit/4db32e3f71df8172e4fb6de32f3f799ecbf10925))
+
 ## [2.1.0](https://github.com/CarterChen247/AlarmScheduler/compare/v2.0.0...v2.1.0) (2023-10-13)
 
 
